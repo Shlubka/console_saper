@@ -13,9 +13,21 @@ int diviup(int num) //Нахер импортировать, когда можн
   return res;
 }
 
+int choseDifficulty()
+{
+  int diff;
+  while (diff != 1 || diff != 2 || diff != 3) {
+    system("cls || clear");
+    printf("Enter your difficulty:\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n> ");
+    scanf("%d", &diff);
+  }
+  return diff;
+}
+
 void drowField(int rov, int col, int corx, int cory)
 {
   system("cls || clear");
+  printf("X - coursour; # - closed cell; F - your flag\n");
   for(int i = col; i > -1; i--)
   {
     for(int j = rov; j > -1; j--)
@@ -35,7 +47,7 @@ void addFlag(int cory, int corx)
 
 int main(void)
 {
-  int rov, col, corx = 0, cory = 0;
+  int rov, col, corx = 0, cory = 0, diff;
   char move;
   printf("Введите масштаб поля(3x7)> ");
   scanf("%dx%d", &rov ,&col);
@@ -43,6 +55,8 @@ int main(void)
   col--;
   corx = diviup(col);
   cory = diviup(rov);
+
+  diff = choseDifficulty();
 
   while(1)
   {
