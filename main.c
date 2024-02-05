@@ -15,8 +15,8 @@ int diviup(int num) //Нахер импортировать, когда можн
 
 int choseDifficulty()
 {
-  int diff;
-  while (diff != 1 || diff != 2 || diff != 3) {
+  int diff = 0;
+  while (diff != 1 && diff != 2 && diff != 3) {
     system("cls || clear");
     printf("Enter your difficulty:\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n> ");
     scanf("%d", &diff);
@@ -24,14 +24,19 @@ int choseDifficulty()
   return diff;
 }
 
-void drowField(int rov, int col, int corx, int cory)
+void drowField(int rov, int col, int corx, int cory, int diff)
 {
   system("cls || clear");
   printf("X - coursour; # - closed cell; F - your flag\n");
+  printf("Your difficult: ");
+  if (diff == 1){printf("easy\n");}
+  else if (diff == 2){printf("normal\n");}
+  else if (diff == 1){printf("hard\n");}
   for(int i = col; i > -1; i--)
   {
     for(int j = rov; j > -1; j--)
     {
+      //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf("X");}
       else{printf("#");}
     }
@@ -60,7 +65,7 @@ int main(void)
 
   while(1)
   {
-    drowField(rov, col, corx, cory);
+    drowField(rov, col, corx, cory, diff);
     scanf("\n%c", &move);
 
     switch(move) //Определение следующего хода
@@ -78,6 +83,8 @@ int main(void)
         corx--;
         break;
     case 'e':
+        system("cls || clear");
+        printf("By!!");
         return 0;
     case 'f':
         addFlag(corx, cory);
