@@ -27,6 +27,12 @@ void drowField(int rov, int col, int corx, int cory)
   }
 }
 
+void addFlag(int cory, int corx)
+{
+  int x = cory + corx;
+  //пока хз как но нужно сделать сохранение шлагов в массив и в функции отрисовки нужно сравнивать с этим массивом
+}
+
 int main(void)
 {
   int rov, col, corx = 0, cory = 0;
@@ -59,6 +65,9 @@ int main(void)
         break;
     case 'e':
         return 0;
+    case 'f':
+        addFlag(corx, cory);
+        break;
     default:
         break;
     }
