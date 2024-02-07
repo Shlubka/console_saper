@@ -27,8 +27,7 @@ int choseDifficulty();
 void drowField(int rov, int col, int corx, int cory, int diff);
 void addFlag(int cory, int corx);
 void genCode(struct BombCoords** bb, int diff, int rov, int col);
-//void print_bombs_data(struct BombCoords* bc);
-int cellCheck(struct BombCoords* bc, int xi, int yj);
+char cellCheck(struct BombCoords* bc, int xi, int yj);
 
 
 int main(void)
@@ -44,8 +43,6 @@ int main(void)
 
   diff = choseDifficulty();
   genCode(&bombCoords, diff, rov, col);
-  //print_bombs_data(bombCoords);
-  //scanf("%d", &c);
 
   while(1)
   {
@@ -171,17 +168,8 @@ void genCode(struct BombCoords** bb, int diff, int rov, int col) {
     }
 }
 
-/*void print_bombs_data(struct BombCoords* bc)
-{
-  struct BombCoords* current = bc;
-  while (current != NULL)
-  {
-    printf("x = %d, y = %d\n", current->x, current->y);
-    current = current -> next;
-  }
-}*/
 
-int cellCheck(struct BombCoords* bc, int xi, int yj)
+char cellCheck(struct BombCoords* bc, int xi, int yj)
 {
   struct BombCoords* current = bc;
   while (current != NULL)
