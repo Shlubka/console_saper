@@ -1,21 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "libs/fielddata.c"
+#include <time.h>
+//#include "libs/fielddata.c"
+
+
+struct BombCoords
+{
+  int x;
+  int y;
+  struct BombCoords* next;
+};
 
 int choseDifficulty();
 void drowField(int rov, int col, int corx, int cory, int diff);
 void addFlag(int cory, int corx);
+void genCode(struct BombCoords** bb, int diff, int rov, int col);
 
 
 int main(void)
 {
-  struct BombCoords
-  {
-    int x;
-    int y;
-    struct BombCoords* next;
-  };
-
   struct BombCoords *bombCoords = NULL;
   int rov, col, corx = 0, cory = 0, diff;
   char move;
@@ -26,7 +29,6 @@ int main(void)
 
   diff = choseDifficulty();
 
-  GenCode(diff, &bombCoords, rov, col);
 
   while(1)
   {
@@ -98,4 +100,78 @@ void addFlag(int cory, int corx)
 {
   int x = cory + corx;
   //пока хз как но нужно сделать сохранение шлагов в массив и в функции отрисовки нужно сравнивать с этим массивом
+}
+
+/*void genCode(struct BombCoords** bb, int diff, int rov, int col)
+{
+  double dd = 0;
+  int bombscol = 0;
+  double resus = bombscol / (rov*col);
+  switch (diff) 
+  {
+    case 1:
+      dd = 0.1;
+      break;
+    case 2:
+      dd = 0.3;
+      break;
+    case 3:
+      dd = 0.5;
+      break;
+  }
+  srand(time(NULL));
+  for(int i = 0; i < col; i++)
+  {
+    for(int j = 0; j < col; j++)
+    {
+      int r = rand() % 2;
+      if (r == 1)
+      {
+        if (resus > dd)
+        {
+          struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
+          bombscol++;
+          //добавление координат новой бомбы
+        }
+      }
+    }
+  }
+}*/
+
+void genCode(struct BombCoords** bb, int diff, int rov, int col) {
+    int bombscol = 0;
+    double resus = (double)bombscol / (rov * col);
+    double dd = 0;
+
+    switch (diff) {
+        case 1:
+            dd = 0.1;
+            break;
+        case 2:
+            dd = 0.3;
+            break;
+        case 3:
+            dd = 0.5;
+            break;
+    }
+
+    srand(time(NULL));
+
+    for (int i = 0; i < rov; i++) {
+        for (int j = 0; j < col; j++) {
+            int r = rand() % 2;
+            if (r == 1) {
+                bombscol++;
+                resus = (double)bombscol / (rov * col);
+                if (resus > dd) {
+                    struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
+                    if (new_bomb != NULL) {
+                        new_bomb->x = i;
+                        new_bomb->y = j;
+                        // Ваша логика добавления новой бомбы
+                    }
+                }
+            }
+        }
+    }
 }

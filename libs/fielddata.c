@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-void GenCode(int diff, struct bombbas *bb, int rov, int col)
+void GenCode(int diff, struct bombbas*** bb, int rov, int col)
 {
-  double dd = 0, resus;
+  double dd = 0;
+  int bombscol = 0;
+  double resus = bombscol / (rov*col);
   switch (diff) 
   {
     case 1:
@@ -17,20 +19,18 @@ void GenCode(int diff, struct bombbas *bb, int rov, int col)
       dd = 0.5;
       break;
   }
-  int bombscol = 0;
   srand(time(NULL));
   for(int i = 0; i < col; i++)
   {
-    for(int i = 0; i < col; i++)
+    for(int j = 0; j < col; j++)
     {
-      int r = rand() % 1;
+      int r = rand() % 2;
       if (r == 1)
       {
-        resus = bombscol / (rov*col);
         if (resus > dd)
         {
-          //return bombbas;
-          //return 1;
+          struct 
+          //добавление координат новой бомбы
         }
       }
     }
