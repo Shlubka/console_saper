@@ -3,8 +3,20 @@
 #include <time.h>
 //#include "libs/fielddata.c"
 
+enum Difficulty {
+    EASY = 1,
+    NORMAL = 2,
+    HARD = 3
+};
 
 struct BombCoords
+{
+  int x;
+  int y;
+  struct BombCoords* next;
+};
+
+struct FlagCoords
 {
   int x;
   int y;
@@ -16,7 +28,7 @@ void drowField(int rov, int col, int corx, int cory, int diff);
 void addFlag(int cory, int corx);
 void genCode(struct BombCoords** bb, int diff, int rov, int col);
 //void print_bombs_data(struct BombCoords* bc);
-int bombCheck(struct BombCoords* bc, int xi, int yj);
+int cellCheck(struct BombCoords* bc, int xi, int yj);
 
 
 int main(void)
@@ -41,14 +53,14 @@ int main(void)
   system("cls || clear");
   printf("X - coursour; # - closed cell; F - your flag\n");
   printf("Your difficult: ");
-  if (diff == 1){printf("easy\n");}
-  else if (diff == 2){printf("normal\n");}
-  else if (diff == 3){printf("hard\n");}
+  if (diff == 1){printf("easy\n\n");}
+  else if (diff == 2){printf("normal\n\n");}
+  else if (diff == 3){printf("hard\n\n");}
   for(int i = 0; i < col; i++)
   {
     for(int j = 0; j < rov; j++)
     {
-      char pr = bombCheck(bombCoords, i, j);
+      char pr = cellCheck(bombCoords, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf("X");}
       else{printf("%c", pr);}
@@ -87,7 +99,8 @@ int main(void)
 int choseDifficulty()
 {
   int diff = 0;
-  while (diff != 1 && diff != 2 && diff != 3) {
+  while (diff != 1 && diff != 2 && diff != 3) 
+  {
     system("cls || clear");
     printf("Enter your difficulty:\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n> ");
     scanf("%d", &diff);
@@ -107,7 +120,7 @@ int choseDifficulty()
   {
     for(int j = 0; j < rov; j++)
     {
-      bombCheck(&bombCoords, i, j);
+      cellCheck(&bombCoords, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf("X");}
       else{printf("#");}
@@ -118,8 +131,7 @@ int choseDifficulty()
 
 void addFlag(int cory, int corx)
 {
-  int x = cory + corx;
-  //пока хз как но нужно сделать сохранение шлагов в массив и в функции отрисовки нужно сравнивать с этим массивом
+
 }
 
 void genCode(struct BombCoords** bb, int diff, int rov, int col) {
@@ -169,7 +181,7 @@ void genCode(struct BombCoords** bb, int diff, int rov, int col) {
   }
 }*/
 
-int bombCheck(struct BombCoords* bc, int xi, int yj)
+int cellCheck(struct BombCoords* bc, int xi, int yj)
 {
   struct BombCoords* current = bc;
   while (current != NULL)
@@ -183,3 +195,4 @@ int bombCheck(struct BombCoords* bc, int xi, int yj)
   }
   return '#';
 }
+
