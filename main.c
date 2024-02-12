@@ -20,20 +20,21 @@ struct FlagCoords
 {
   int x;
   int y;
-  struct BombCoords* next;
+  struct FlagCoords* next;
 };
 
 int choseDifficulty();
-void drowField(int rov, int col, int corx, int cory, int diff);
-void addFlag(int cory, int corx);
-void genCode(struct BombCoords** bb, int diff, int rov, int col);
-char cellCheck(struct BombCoords* bc, int xi, int yj);
+void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col, int corx, int cory, int diff);
+void addFlag(struct FlagCoords** bc, int cory, int corx);
+void genCode(struct BombCoords** bc, int diff, int rov, int col);
+char cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj);
 
 
 int main(void)
 {
   srand(time(NULL));
   struct BombCoords *bombCoords = NULL;
+  struct FlagCoords *flagCoords = NULL;
   int rov, col, corx = 0, cory = 0, diff, c;
   char move;
   printf("Введите масштаб поля(3x7)> ");
@@ -46,8 +47,8 @@ int main(void)
 
   while(1)
   {
-  //  drowField(rov, col, corx, cory, diff);
-  system("cls || clear");
+  drowField(&flagCoords, &bombCoords, rov, col, corx, cory, diff);
+  /*system("cls || clear");
   printf("X - coursour; # - closed cell; F - your flag\n");
   printf("Your difficult: ");
   if (diff == 1){printf("easy\n\n");}
@@ -63,7 +64,7 @@ int main(void)
       else{printf("%c", pr);}
     }
     printf("\n");
-  }
+  }*/
     scanf("\n%c", &move);
 
     switch(move) //Определение следующего хода
@@ -84,8 +85,12 @@ int main(void)
         system("cls || clear");
         printf("By!!");
         return 0;
+    case 'q':
+        system("cls || clear");
+        printf("By!!");
+        return 0;
     case 'f':
-        addFlag(corx, cory);
+        addFlag(&flagCoords, corx, cory);
         break;
     default:
         break;
@@ -96,7 +101,7 @@ int main(void)
 int choseDifficulty()
 {
   int diff = 0;
-  while (diff != 1 && diff != 2 && diff != 3) 
+  while (diff != EASY && diff != NORMAL && diff != HARD) 
   {
     system("cls || clear");
     printf("Enter your difficulty:\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n> ");
@@ -105,7 +110,7 @@ int choseDifficulty()
   return diff;
 }
 
-/*void drowField(int rov, int col, int corx, int cory, int diff)
+void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col, int corx, int cory, int diff)
 {
   system("cls || clear");
   printf("X - coursour; # - closed cell; F - your flag\n");
@@ -117,70 +122,79 @@ int choseDifficulty()
   {
     for(int j = 0; j < rov; j++)
     {
-      cellCheck(&bombCoords, i, j);
+      char sum = cellCheck(*fc, *bc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf("X");}
-      else{printf("#");}
+      else{printf("%c", sum);}
     }
     printf("\n");
   }
-}*/
-
-void addFlag(int cory, int corx)
-{
-
 }
 
-void genCode(struct BombCoords** bb, int diff, int rov, int col) {
-    int bombscol = 0;
-    double resus = (double)bombscol / (rov * col);
-    double dd = 0;
+void addFlag(struct FlagCoords** fc, int cory, int corx)
+{
+  struct FlagCoords* new_flag = (struct FlagCoords*)malloc(sizeof(struct FlagCoords));
+  new_flag->x = corx;
+  new_flag->y = cory;
+  new_flag->next = *fc;
+  *fc = new_flag;
+}
+
+void genCode(struct BombCoords** bc, int diff, int rov, int col) {
+    int totalCells = rov * col;
+    int numBombs = 0;
+    double threshold = 0.0;
 
     switch (diff) {
-        case 1:
-            dd = 0.1;
+        case EASY:
+            threshold = 0.1;
             break;
-        case 2:
-            dd = 0.3;
+        case NORMAL:
+            threshold = 0.3;
             break;
-        case 3:
-            dd = 0.5;
+        case HARD:
+            threshold = 0.5;
             break;
     }
 
-    for (int i = 0; i < rov; i++) {
-        for (int j = 0; j < col; j++) {
-            int r = rand() % 2;
-            if (r == 1) {
-                bombscol++;
-                resus = (double)bombscol / (rov * col);
-                if (resus < dd) {
-                    struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
-                    if (new_bomb != NULL) {
-                        new_bomb->x = i;
-                        new_bomb->y = j;
-                        new_bomb->next = *bb; // Link the new bomb to the beginning of the
-                        *bb = new_bomb;
-                    }
-                }
-            }
+    numBombs = totalCells * threshold;
+
+    for (int i = 0; i < numBombs; i++) {
+        int x = rand() % rov;
+        int y = rand() % col;
+
+        struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
+        if (new_bomb != NULL) {
+            new_bomb->x = x;
+            new_bomb->y = y;
+            new_bomb->next = *bc;
+            *bc = new_bomb;
         }
     }
 }
 
 
-char cellCheck(struct BombCoords* bc, int xi, int yj)
+char cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
 {
-  struct BombCoords* current = bc;
-  while (current != NULL)
+  struct BombCoords* current_b = bc;
+  struct FlagCoords* current_f = fc;
+  while (current_b != NULL)
   {
-    if (current->x == xi && current->y == yj)
+    if (current_b->x == xi && current_b->y == yj)
     {
       //printf("@");
       return '@';
     }
-    current = current -> next;
+    current_b = current_b -> next;
   }
-  return '#';
+  while (current_f != NULL)
+  {
+    if (current_f->x == xi && current_f->y == yj)
+    {
+      return 'F';
+    }
+    current_f = current_f->next;
+  }
+  return '?';
 }
 
