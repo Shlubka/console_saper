@@ -1,7 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-//#include "libs/fielddata.c"
+#include <termios.h>
+#include <unistd.h>
+
+
+
+// обозначение светов
+#define Reset "\x1b[0m"
+#define ColRed "\x1b[31m"
+#define ColGre "\x1b[32m"
 
 enum Difficulty {
     EASY = 1,
@@ -23,15 +31,19 @@ struct FlagCoords
   struct FlagCoords* next;
 };
 
+int doureal();
+void enableRawMode();
 int choseDifficulty();
 void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col, int corx, int cory, int diff);
 void addFlag(struct FlagCoords** bc, int cory, int corx);
 void genCode(struct BombCoords** bc, int diff, int rov, int col);
-char cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj);
+char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj);
+
 
 
 int main(void)
 {
+  int dor;
   srand(time(NULL));
   struct BombCoords *bombCoords = NULL;
   struct FlagCoords *flagCoords = NULL;
@@ -45,29 +57,13 @@ int main(void)
   diff = choseDifficulty();
   genCode(&bombCoords, diff, rov, col);
 
+  enableRawMode();
   while(1)
   {
   drowField(&flagCoords, &bombCoords, rov, col, corx, cory, diff);
-  /*system("cls || clear");
-  printf("X - coursour; # - closed cell; F - your flag\n");
-  printf("Your difficult: ");
-  if (diff == 1){printf("easy\n\n");}
-  else if (diff == 2){printf("normal\n\n");}
-  else if (diff == 3){printf("hard\n\n");}
-  for(int i = 0; i < col; i++)
-  {
-    for(int j = 0; j < rov; j++)
-    {
-      char pr = cellCheck(bombCoords, i, j);
-      //if координата открыта и рядом нет бомб, то нарисовать ·
-      if(i == cory && j == corx){printf("X");}
-      else{printf("%c", pr);}
-    }
-    printf("\n");
-  }*/
     scanf("\n%c", &move);
 
-    switch(move) //Определение следующего хода
+    switch(move) //Определение следующего хода 
     {
     case 'w':
         cory--;
@@ -82,17 +78,18 @@ int main(void)
         corx++;
         break;
     case 'e':
-        system("cls || clear");
+        system("clear");
+        dor = doureal(); 
         printf("By!!");
         return 0;
     case 'q':
-        system("cls || clear");
+        system("clear");
+        dor = doureal();
         printf("By!!");
         return 0;
     case 'f':
         addFlag(&flagCoords, corx, cory);
-        break;
-    default:
+        break; default:
         break;
     }
   }
@@ -101,7 +98,7 @@ int main(void)
 int choseDifficulty()
 {
   int diff = 0;
-  while (diff != EASY && diff != NORMAL && diff != HARD) 
+  while (diff != EASY && diff != NORMAL && diff != HARD)
   {
     system("cls || clear");
     printf("Enter your difficulty:\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n> ");
@@ -112,23 +109,31 @@ int choseDifficulty()
 
 void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col, int corx, int cory, int diff)
 {
-  system("cls || clear");
-  printf("X - coursour; # - closed cell; F - your flag\n");
+  system("clear");
+  printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
   printf("Your difficult: ");
   if (diff == 1){printf("easy\n");}
   else if (diff == 2){printf("normal\n");}
   else if (diff == 3){printf("hard\n");}
+  printf("\n╔");
+  for (int i = 0; i < col; i++){printf("═");}
+  printf("╗\n");
   for(int i = 0; i < col; i++)
   {
+    printf("║");
     for(int j = 0; j < rov; j++)
     {
-      char sum = cellCheck(*fc, *bc, i, j);
+      char* sum = cellCheck(*fc, *bc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
-      if(i == cory && j == corx){printf("X");}
-      else{printf("%c", sum);}
+      if(i == cory && j == corx){printf(ColGre "X" Reset);}
+      else{printf("%s", sum);}
     }
-    printf("\n");
+
+    printf("║\n");
   }
+  printf("╚");
+  for (int i = 0; i < col; i++){printf("═");}
+  printf("╝\n");
 }
 
 void addFlag(struct FlagCoords** fc, int cory, int corx)
@@ -174,7 +179,7 @@ void genCode(struct BombCoords** bc, int diff, int rov, int col) {
 }
 
 
-char cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
+char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
 {
   struct BombCoords* current_b = bc;
   struct FlagCoords* current_f = fc;
@@ -183,7 +188,7 @@ char cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
     if (current_b->x == xi && current_b->y == yj)
     {
       //printf("@");
-      return '@';
+      return ColRed "@" Reset;
     }
     current_b = current_b -> next;
   }
@@ -191,10 +196,38 @@ char cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
   {
     if (current_f->x == xi && current_f->y == yj)
     {
-      return 'F';
+      return "F";
     }
     current_f = current_f->next;
   }
-  return '?';
+  return "?";
 }
 
+int doureal() {
+
+    char yn[4];
+
+    while (1) {
+        printf("Do you really want to quit the game? (No(1)/yes(2)): ");
+        scanf("%3s", yn);
+
+        if (strcmp(yn, "no") == 0 || strcmp(yn, "1") == 0 || strcmp(yn, "No") == 0 || strcmp(yn, "1") == 0) {
+            return 1; // Возвращаем 1
+        }
+
+        if (strcmp(yn, "yes") == 0 || strcmp(yn, "2") == 0 || strcmp(yn, "Yes") == 0) {
+            return 2;
+        }
+
+        printf("Please enter a valid response.\n\n");
+    }
+    enableRawMode();
+}
+
+void enableRawMode()
+{
+    struct termios raw;
+    tcgetattr(STDIN_FILENO, &raw);
+    raw.c_lflag &= ~(ECHO | ICANON);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+}
