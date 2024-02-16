@@ -3,7 +3,7 @@
 #include <time.h>
 #include <termios.h>
 #include <unistd.h>
-
+#include <string.h>
 
 
 // обозначение светов
@@ -51,8 +51,8 @@ int main(void)
   char move;
   printf("Введите масштаб поля(3x7)> ");
   scanf("%dx%d", &rov ,&col);
-  col = col - 1;
-  rov = rov - 1;
+  /*col = col - 1;
+  rov = rov - 1;*/
 
   diff = choseDifficulty();
   int num = genCode(&bombCoords, diff, rov, col);
@@ -67,19 +67,19 @@ int main(void)
     {
     case 'w':
         corx--;
-        if (corx < 0){corx = col - 1;}
+        if (corx < 0){corx = col-1;}
         break;
     case 's':
-        if (cory >= rov - 1){cory = - 1;}
         corx++;
+        if (corx > col - 1){corx= 0;}
         break;
     case 'a':
         cory--;
-        if (corx < 0){corx = col;}
+        if (cory < 0){cory = rov-1;}
         break;
     case 'd':
         cory++;
-        if (corx > col - 1){corx= 0;}
+        if (cory > rov - 1){cory= 0;}
         break;
     case 'e':
         system("clear");
@@ -120,12 +120,12 @@ void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col,
   else if (diff == 2){printf("normal\n");}
   else if (diff == 3){printf("hard\n");}
   printf("\n╔");
-  for (int j = 0; j < rov; j++){printf("═");}
+  for(int i = 0; i < rov; i++){printf("═");}
   printf("╗\n");
-  for(int j = 0; j < col + 1; j++)
+  for(int j = 0; j < col; j++)
   {
     printf("║");
-    for(int i = 0; i < rov + 1; i++)
+    for(int i = 0; i < rov; i++)
     {
       char* sum = cellCheck(*fc, *bc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
