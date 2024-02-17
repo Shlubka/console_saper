@@ -7,7 +7,7 @@
 
 
 // обозначение светов
-#define Reset "\x1b[0m"
+#define Reset "\x1b[0m"//белый
 #define ColRed "\x1b[31m"
 #define ColGre "\x1b[32m"
 
@@ -34,9 +34,9 @@ struct FlagCoords
 int doureal();
 void enableRawMode();
 int choseDifficulty();
-void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col, int corx, int cory, int diff, int num);
+void drowField(struct FlagCoords** fc, struct BombCoords** bc, int row, int col, int corx, int cory, int diff, int num);
 void addFlag(struct FlagCoords** bc, int cory, int corx);
-int genCode(struct BombCoords** bc, int diff, int rov, int col);
+int genCode(struct BombCoords** bc, int diff, int row, int col);
 char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj);
 
 
@@ -47,20 +47,39 @@ int main(void)
   srand(time(NULL));
   struct BombCoords *bombCoords = NULL;
   struct FlagCoords *flagCoords = NULL;
-  int rov, col, corx = 0, cory = 0, diff, c;
-  char move;
-  printf("Введите масштаб поля(3x7)> ");
-  scanf("%dx%d", &rov ,&col);
+  int row, col, corx = 0, cory = 0, diff;
+  char move, ok[3];
+  printf("Введите масштаб поля(30x30)> ");
+  scanf("%dx%d", &row ,&col);
+  if (row < 30 && col < 30)
+  {
+    while (1) {
+      printf("The size of your field is less than 30x30. Are you sure? (Yes/no) > ");
+      getchar();  // Clear newline character from previous input
+      if (fgets(ok, sizeof ok, stdin) == NULL) {
+        break;
+      }
+      if (strcmp(ok, "\n") == 0) {
+        break;
+      }
+      if (strcasecmp(ok, "No\n") == 0 || strcasecmp(ok, "no\n") == 0) {
+        break;
+      }
+      if (strcasecmp(ok, "Yes\n") == 0 || strcasecmp(ok, "yes\n") == 0) {
+        break;
+      }
+    }
+  }
   /*col = col - 1;
-  rov = rov - 1;*/
+  row = row - 1;*/
 
   diff = choseDifficulty();
-  int num = genCode(&bombCoords, diff, rov, col);
+  int num = genCode(&bombCoords, diff, row, col);
 
   enableRawMode();
   while(1)
   {
-  drowField(&flagCoords, &bombCoords, rov, col, corx, cory, diff, num);
+  drowField(&flagCoords, &bombCoords, row, col, corx, cory, diff, num);
     scanf("\n%c", &move);
 
     switch(move) //Определение следующего хода 
@@ -75,11 +94,11 @@ int main(void)
         break;
     case 'a':
         cory--;
-        if (cory < 0){cory = rov-1;}
+        if (cory < 0){cory = row-1;}
         break;
     case 'd':
         cory++;
-        if (cory > rov - 1){cory= 0;}
+        if (cory > row - 1){cory= 0;}
         break;
     case 'e':
         system("clear");
@@ -104,14 +123,14 @@ int choseDifficulty()
   int diff = 0;
   while (diff != EASY && diff != NORMAL && diff != HARD)
   {
-    system("cls || clear");
+    system("clear");
     printf("Enter your difficulty:\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n> ");
     scanf("%d", &diff);
   }
   return diff;
 }
 
-void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col, int corx, int cory, int diff, int num)
+void drowField(struct FlagCoords** fc, struct BombCoords** bc, int row, int col, int corx, int cory, int diff, int num)
 {
   system("clear");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
@@ -120,12 +139,12 @@ void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col,
   else if (diff == 2){printf("normal\n");}
   else if (diff == 3){printf("hard\n");}
   printf("\n╔");
-  for(int i = 0; i < rov; i++){printf("═");}
+  for(int i = 0; i < row; i++){printf("═");}
   printf("╗\n");
   for(int j = 0; j < col; j++)
   {
     printf("║");
-    for(int i = 0; i < rov; i++)
+    for(int i = 0; i < row; i++)
     {
       char* sum = cellCheck(*fc, *bc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
@@ -136,9 +155,9 @@ void drowField(struct FlagCoords** fc, struct BombCoords** bc, int rov, int col,
     printf("║\n");
   }
   printf("╚");
-  for (int j = 0; j < rov; j++){printf("═");}
+  for (int j = 0; j < row; j++){printf("═");}
   printf("╝\n");
-  printf("%d, %d, %d, %d, %d", corx, cory, rov, col, num);
+  printf("%d, %d, %d, %d, %d", corx, cory, row, col, num);
 
 }
 
@@ -151,8 +170,8 @@ void addFlag(struct FlagCoords** fc, int cory, int corx)
   *fc = new_flag;
 }
 
-int genCode(struct BombCoords** bc, int diff, int rov, int col) {
-    int totalCells = rov * col;
+int genCode(struct BombCoords** bc, int diff, int row, int col) {
+    int totalCells = row * col;
     int numBombs = 0;
     double threshold = 0.0;
 
@@ -171,7 +190,7 @@ int genCode(struct BombCoords** bc, int diff, int rov, int col) {
     numBombs = totalCells * threshold;
 
     for (int i = 0; i < numBombs; i++) {
-        int x = rand() % rov;
+        int x = rand() % row;
         int y = rand() % col;
 
         struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
