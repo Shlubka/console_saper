@@ -3,6 +3,11 @@ use text_io::scan;
 use termion::raw::{IntoRawMode, RawTerminal};
 use termion::clear;
 
+
+/*enter_move (move: char) -> (i32, i32){
+
+}*/
+
 fn main(){
     print!("Enter field size (XxY) > ");
     io::stdout().flush().unwrap();
@@ -38,6 +43,17 @@ fn main(){
             }
             println!();
         }
-        scan!("{}x{}", x, y);
+        let mut stdout = stdout();
+        let mut stdout = stdout.lock().into_raw_mode().unwrap();
+        for c in std::io::stdin().keys() {
+        match c.unwrap() {
+            // Если пользователь нажимает 'q', выходим из цикла
+            termion::event::Key::Char('q') => break,
+            _ => {}
+        }
+    }
+    drop(stdout); // Отключаем "сырой" режим
+    let mut stdout = stdout.into_raw_mode().unwrap().into_inner();
+
     }
 }
