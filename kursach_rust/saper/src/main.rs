@@ -37,13 +37,13 @@ fn main(){
     }
 
     loop {
-        for i in 0..x {
-            for j in 0..y {
+        for _ in 0..x {
+            for _ in 0..y {
                 print!("#");
             }
             println!();
         }
-        let mut stdout = stdout();
+        let mut _stdout = stdout();
         let mut stdout = stdout.lock().into_raw_mode().unwrap();
         for c in std::io::stdin().keys() {
         match c.unwrap() {
@@ -53,7 +53,7 @@ fn main(){
         }
     }
     drop(stdout); // Отключаем "сырой" режим
-    let mut stdout = stdout.into_raw_mode().unwrap().into_inner();
+    let mut stdout = stdout.into_raw_mode().unwrap().into_inner();*/
 
     }
 }
