@@ -4,12 +4,14 @@
 #include <termios.h>
 #include <unistd.h>
 #include <string.h>
-
+#include <sys/ioctl.h>
+#include "libs/term_tools.c"
 
 // обозначение светов
 #define Reset "\x1b[0m"//белый
 #define ColRed "\x1b[31m"
-#define ColGre "\x1b[32m"
+#define ColCors "\x1b[32m"
+//#define reset_curs printf("")
 
 enum Difficulty {
     EASY = 1,
@@ -28,17 +30,19 @@ struct FlagCoords
 {
   int x;
   int y;
+  //int num
   struct FlagCoords* next;
 };
 
 int doureal();
 void enableRawMode();
+void disableRawMode();
 int choseDifficulty();
 void drowField(struct FlagCoords** fc, struct BombCoords** bc, int row, int col, int corx, int cory, int diff, int num);
 void addFlag(struct FlagCoords** bc, int cory, int corx);
 int genCode(struct BombCoords** bc, int diff, int row, int col);
 char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj);
-
+//void clear_term(int *height);
 
 
 int main(void)
@@ -47,13 +51,16 @@ int main(void)
   srand(time(NULL));
   struct BombCoords *bombCoords = NULL;
   struct FlagCoords *flagCoords = NULL;
-  int row, col, corx = 0, cory = 0, diff;
+  int row, col, corx = 0, cory = 0, diff, x, y;
   char move, ok[3];
+  term_size(&x, &y);
+  //clear_term(&x);
   printf("Введите масштаб поля(30x30)> ");
   scanf("%dx%d", &row ,&col);
   if (row < 30 && col < 30)
   {
     while (1) {
+      //term_size(&x, &y);
       printf("The size of your field is less than 30x30. Are you sure? (Yes/no) > ");
       getchar();  // Clear newline character from previous input
       if (fgets(ok, sizeof ok, stdin) == NULL) {
@@ -62,10 +69,12 @@ int main(void)
       if (strcmp(ok, "\n") == 0) {
         break;
       }
-      if (strcasecmp(ok, "No\n") == 0 || strcasecmp(ok, "no\n") == 0) {
+      else if (strcasecmp(ok, "Yes\n") == 0 || strcasecmp(ok, "yes\n") == 0) {
         break;
       }
-      if (strcasecmp(ok, "Yes\n") == 0 || strcasecmp(ok, "yes\n") == 0) {
+      else if (strcasecmp(ok, "No\n") == 0 || strcasecmp(ok, "no\n") == 0) {
+        col = 30;
+        row = 30;
         break;
       }
     }
@@ -77,9 +86,11 @@ int main(void)
   int num = genCode(&bombCoords, diff, row, col);
 
   enableRawMode();
+  system("clear");
   while(1)
   {
-  drowField(&flagCoords, &bombCoords, row, col, corx, cory, diff, num);
+    //clear_term(&x);
+    drowField(&flagCoords, &bombCoords, row, col, corx, cory, diff, num);
     scanf("\n%c", &move);
 
     switch(move) //Определение следующего хода 
@@ -100,16 +111,21 @@ int main(void)
         cory++;
         if (cory > row - 1){cory= 0;}
         break;
-    case 'e':
+    case 'r':
         system("clear");
-        dor = doureal(); 
-        printf("By!!");
-        return 0;
+        break;
     case 'q':
         system("clear");
         dor = doureal();
-        printf("By!!");
-        return 0;
+        if (dor == 2)
+        {
+          printf("%d\n", dor);
+          return 0;
+        }
+        else if (dor == 1)
+        {
+          break;
+        }
     case 'f':
         addFlag(&flagCoords, corx, cory);
         break; default:
@@ -132,33 +148,35 @@ int choseDifficulty()
 
 void drowField(struct FlagCoords** fc, struct BombCoords** bc, int row, int col, int corx, int cory, int diff, int num)
 {
-  system("clear");
+  printf("\033[0;0H");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
   printf("Your difficult: ");
   if (diff == 1){printf("easy\n");}
   else if (diff == 2){printf("normal\n");}
   else if (diff == 3){printf("hard\n");}
-  printf("\n╔");
-  for(int i = 0; i < row; i++){printf("═");}
+  printf("\n╔═");
+  for(int i = 0; i < row; i++){printf("══");}
   printf("╗\n");
   for(int j = 0; j < col; j++)
   {
-    printf("║");
+    printf("║ ");
     for(int i = 0; i < row; i++)
     {
       char* sum = cellCheck(*fc, *bc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
-      if(i == cory && j == corx){printf(ColGre "X" Reset);}
-      else{printf("%s", sum);}
+      if(i == cory && j == corx){printf(ColCors "X " Reset);}
+      else{printf("%s ", sum);}
+      fflush(stdout); // очищаем буфер вывода после каждой операции вывода
     }
 
     printf("║\n");
+    fflush(stdout); // очищаем буфер вывода после каждой операции вывода
   }
-  printf("╚");
-  for (int j = 0; j < row; j++){printf("═");}
+  printf("╚═");
+  for (int j = 0; j < row; j++){printf("══");}
   printf("╝\n");
-  printf("%d, %d, %d, %d, %d", corx, cory, row, col, num);
-
+  fflush(stdout); // очищаем буфер вывода после каждой операции вывода
+  //printf("%d, %d, %d, %d, %d", corx, cory, row, col, num);
 }
 
 void addFlag(struct FlagCoords** fc, int cory, int corx)
@@ -229,19 +247,24 @@ char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
   return "?";
 }
 
-int doureal() {
+/*void openCell (struct )
+{
 
+}*/
+
+int doureal ()
+{
     char yn[4];
-
+    disableRawMode();
     while (1) {
-        printf("Do you really want to quit the game? (No(1)/yes(2)): ");
+        printf("Do you really want to quit the game? (no/yes): ");
         scanf("%3s", yn);
 
-        if (strcmp(yn, "no") == 0 || strcmp(yn, "1") == 0 || strcmp(yn, "No") == 0 || strcmp(yn, "1") == 0) {
-            return 1; // Возвращаем 1
+        if (strcmp(yn, "no") == 0 || strcmp(yn, "No") == 0) {
+            return 1;
         }
 
-        if (strcmp(yn, "yes") == 0 || strcmp(yn, "2") == 0 || strcmp(yn, "Yes") == 0) {
+        if (strcmp(yn, "yes") == 0 || strcmp(yn, "Yes") == 0) {
             return 2;
         }
 
@@ -250,10 +273,3 @@ int doureal() {
     enableRawMode();
 }
 
-void enableRawMode()
-{
-    struct termios raw;
-    tcgetattr(STDIN_FILENO, &raw);
-    raw.c_lflag &= ~(ECHO | ICANON);
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-}
