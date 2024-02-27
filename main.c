@@ -34,6 +34,13 @@ struct FlagCoords
   //char cell;
   struct FlagCoords* next;
 };
+struct OpenCells
+{
+  int x;
+  int y;
+  char cell;
+  struct OpenCells* next;
+};
 
 int doureal();
 void enableRawMode();
@@ -75,8 +82,8 @@ int main(void)
       break;
       }
       else if (strcasecmp(ok, "No") == 0 || strcasecmp(ok, "no") == 0 || strcasecmp(ok, "2\n") == 0) {
-        row = width / 2;
-        col = height - 10;
+        row = width / 4;
+        col = height / 2;
         break;
       }
     }
@@ -98,7 +105,6 @@ int main(void)
       else if (strcasecmp(ok, "No") == 0 || strcasecmp(ok, "no") == 0 || strcasecmp(ok, "2") == 0) {
         col = 30;
         row = 30;
-        break;
         break;
       }
     }
@@ -156,7 +162,11 @@ int main(void)
         }
     case 'f':
         addFlag(&flagCoords, corx, cory);
-        break; default:
+        break;
+    default:
+        system("clear");
+        printf("Incorect input\n");
+        sleep(1);
         break;
     }
   }

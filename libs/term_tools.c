@@ -29,7 +29,7 @@ void term_size(int *height, int *width)//функция для посчета д
 
 void indent(int *width, int *height, int *x, int *y, int col, int row)
 {
-   *x = (*width - (col * 2) - 3)/2;
-   *y = (*height - row - 5)/2;
+   *x = (*width - (row * 2) - 3)/2;
+   *y = (*height - col - 5)/2;
 }
 
