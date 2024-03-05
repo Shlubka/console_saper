@@ -42,6 +42,8 @@ struct OpenCells
   struct OpenCells* next;
 };
 
+
+int confirmInput(int width, int height, const char* message, int defaultWidth, int defaultHeight);
 int doureal();
 void enableRawMode();
 void disableRawMode();
@@ -60,53 +62,27 @@ int main(void)
   struct BombCoords *bombCoords = NULL;
   struct FlagCoords *flagCoords = NULL;
   int row, col, corx = 0, cory = 0, diff, x, y, width, height;
-  char move, ok[3];
+  char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
   welcome(&y, &x);
   //clear_term(&x);
   printf("Enter the field dimensions (format: 30x30) > ");
   scanf("%dx%d", &row ,&col);
-  if (row > height || col > width)
+  if (row > height || col > width) 
   {
-    while (1) {
-      printf("The size of your field is larger than size of terminal. Are you sure? (Yes/no) > ");
-      getchar();  // Clear newline character from previous input
-      if (fgets(ok, sizeof ok, stdin) == NULL) {
-        break;
-      }
-      else if (strcmp(ok, "\n") == 0) {
-        break;
-      }
-      else if (strcasecmp(ok, "Yes") == 0 || strcasecmp(ok, "yes") == 0 || strcasecmp(ok, "1") == 0) {
-      break;
-      }
-      else if (strcasecmp(ok, "No") == 0 || strcasecmp(ok, "no") == 0 || strcasecmp(ok, "2\n") == 0) {
-        row = width / 4;
-        col = height / 2;
-        break;
-      }
+    if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) > ", width / 4, height / 2) == 0) 
+    {
+        // Reset row and col to default values
+        row = height / 4;
+        col = width / 4;
     }
-  }
-  else if (row < 30 && col < 30)
+  } else if (row < 30 && col < 30) 
   {
-    while (1) {
-    printf("The size of your field is less than 30x30. Are you sure? (Yes/no) > ");
-      getchar();  // Clear newline character from previous input
-      if (fgets(ok, sizeof ok, stdin) == NULL) {
-        break;
-      }
-      if (strcmp(ok, "\n") == 0) {
-        break;
-      }
-      else if (strcasecmp(ok, "Yes") == 0 || strcasecmp(ok, "yes") == 0 || strcasecmp(ok, "1") == 0) {
-        break;
-      }
-      else if (strcasecmp(ok, "No") == 0 || strcasecmp(ok, "no") == 0 || strcasecmp(ok, "2") == 0) {
-        col = 30;
+    if (confirmInput(width, height, "The size of your field is less than 30x30. Are you sure? (Yes/no) > ", 30, 30) == 0) 
+    {
         row = 30;
-        break;
-      }
+        col = 30;
     }
   }
   /*col = col - 1;
@@ -122,7 +98,7 @@ int main(void)
     indent(&width, &height, &x, &y, col, row);
     //clear_term(&x);
     drowField(&flagCoords, &bombCoords, row, col, corx, cory, diff, num, &x, &y);
-    printf("%d, %d;  %d, %d", width, height, row, col);
+    //printf("%d, %d;  %d, %d", width, height, row, col);
     scanf("\n%c", &move);
 
     switch(move) //Определение следующего хода 
@@ -326,3 +302,20 @@ int doureal ()
     }
 }
 
+int confirmInput(int width, int height, const char* message, int defaultWidth, int defaultHeight) {
+    char ok[10];
+    while (1) {
+        printf("%s", message);
+        getchar();  // Clear newline character from previous input
+        if (fgets(ok, sizeof ok, stdin) == NULL || strcmp(ok, "\n") == 0) {
+            break;
+        } else if (strcasecmp(ok, "yes\n") == 0 || strcasecmp(ok, "y\n") == 0 || strcasecmp(ok, "1\n") == 0) {
+            return 1;
+        } else if (strcasecmp(ok, "no\n") == 0 || strcasecmp(ok, "n\n") == 0 || strcasecmp(ok, "2\n") == 0) {
+            return 0;
+        } else {
+            printf("Invalid input. Please enter 'yes' or 'no'.\n");
+        }
+    }
+    return 0;
+}
