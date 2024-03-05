@@ -1,6 +1,6 @@
 #include "gamefn.c"
 
-
+char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj);
 int confirmInput(int width, int height, const char* message, int defaultWidth, int defaultHeight);
 int doureal();
 void enableRawMode();

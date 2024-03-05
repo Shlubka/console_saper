@@ -6,6 +6,34 @@
 #include <string.h>
 #include <sys/ioctl.h>
 
+// обозначение светов
+#define Reset "\x1b[0m"//белый
+#define ColRed "\x1b[31m"
+#define ColCors "\x1b[32m"
+//#define reset_curs printf("")
+
+
+struct BombCoords
+{
+  int x;
+  int y;
+  struct BombCoords* next;
+};
+
+struct FlagCoords
+{
+  int x;
+  int y;
+  //char cell;
+  struct FlagCoords* next;
+};
+struct OpenCells
+{
+  int x;
+  int y;
+  char cell;
+  struct OpenCells* next;
+};
 enum Difficulty {
     EASY = 1,
     NORMAL = 2,
@@ -13,6 +41,37 @@ enum Difficulty {
     VERY_HARD = 4,
     IMPOSSIBLE = 5,
 };
+
+char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
+{
+  struct BombCoords* current_b = bc;
+  struct FlagCoords* current_f = fc;
+  while (current_b != NULL)
+  {
+    if (current_b->x == xi && current_b->y == yj)
+    {
+      //printf("@");
+      return ColRed "@" Reset;
+    }
+    current_b = current_b -> next;
+  }
+  while (current_f != NULL)
+  {
+    if (current_f->x == xi && current_f->y == yj)
+    {
+      return "F";
+    }
+    current_f = current_f->next;
+  }
+  return "?";
+}
+
+/*void openCell (struct )
+{
+
+}*/
+
+
 
 int choseDifficulty()
 {
@@ -118,35 +177,6 @@ int genCode(struct BombCoords** bc, int diff, int row, int col) {
     return numBombs;
 }
 
-
-char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
-{
-  struct BombCoords* current_b = bc;
-  struct FlagCoords* current_f = fc;
-  while (current_b != NULL)
-  {
-    if (current_b->x == xi && current_b->y == yj)
-    {
-      //printf("@");
-      return ColRed "@" Reset;
-    }
-    current_b = current_b -> next;
-  }
-  while (current_f != NULL)
-  {
-    if (current_f->x == xi && current_f->y == yj)
-    {
-      return "F";
-    }
-    current_f = current_f->next;
-  }
-  return "?";
-}
-
-/*void openCell (struct )
-{
-
-}*/
 
 int doureal ()
 {

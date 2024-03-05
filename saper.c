@@ -9,39 +9,6 @@
 #include "libs/decorations.c"
 #include "libs/gamefn.h"
 
-// обозначение светов
-#define Reset "\x1b[0m"//белый
-#define ColRed "\x1b[31m"
-#define ColCors "\x1b[32m"
-//#define reset_curs printf("")
-
-
-struct BombCoords
-{
-  int x;
-  int y;
-  struct BombCoords* next;
-};
-
-struct FlagCoords
-{
-  int x;
-  int y;
-  //char cell;
-  struct FlagCoords* next;
-};
-struct OpenCells
-{
-  int x;
-  int y;
-  char cell;
-  struct OpenCells* next;
-};
-
-
-//void clear_term(int *height);
-
-
 int main(void)
 {
   int dor;
