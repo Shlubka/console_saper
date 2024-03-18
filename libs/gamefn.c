@@ -31,7 +31,7 @@ struct OpenCells
 {
   int x;
   int y;
-  char cell;
+  char* cell;
   struct OpenCells* next;
 };
 enum Difficulty {
@@ -42,18 +42,19 @@ enum Difficulty {
     IMPOSSIBLE = 5,
 };
 
-char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
+char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* oc, int xi, int yj)
 {
-  struct BombCoords* current_b = bc;
+  struct OpenCells* current_c = oc;
   struct FlagCoords* current_f = fc;
-  while (current_b != NULL)
+  while (current_c != NULL)
   {
-    if (current_b->x == xi && current_b->y == yj)
+    if (current_c->x == xi && current_c->y == yj)
     {
       //printf("@");
-      return ColRed "@" Reset;
+      //тут мнесто @ нужно вернуть содержимое яйчейки
+      return current_c->cell;
     }
-    current_b = current_b -> next;
+    current_c = current_c -> next;
   }
   while (current_f != NULL)
   {
@@ -66,10 +67,34 @@ char* cellCheck(struct FlagCoords* fc, struct BombCoords* bc, int xi, int yj)
   return "?";
 }
 
-/*void openCell (struct )
+void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
 {
-
-}*/
+  struct BombCoords* current_b = bc;
+  struct OpenCells* current_c = oc;
+  while (current_b != NULL)
+  {
+    if (current_b->x == corx && current_b->y == cory)
+    {
+      // Вместо печати сообщения можно вызвать функцию обработки проигрыша
+      printf("You are losing this game\n");
+      sleep(100);
+      // Дополнительные действия при проигрыше
+      return; // выход из функции
+    }
+    current_b = current_b->next;
+  }
+  while (current_c != NULL)
+  {
+    if (current_c->x == corx && current_c->y == cory)
+    {
+      // Вместо печати сообщения можно вызвать функцию обработки проигрыша
+      printf("You are losing this game\n");
+      // Дополнительные действия при проигрыше
+      return; // выход из функции
+    }
+    current_b = current_b->next;
+  }
+}
 
 
 
@@ -79,13 +104,13 @@ int choseDifficulty()
   while (diff != EASY && diff != NORMAL && diff != HARD)
   {
     system("clear");
-    printf("Enter your difficulty:\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n> ");
+    printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)> ");
     scanf("%d", &diff);
   }
   return diff;
 }
 
-void drowField(struct FlagCoords** fc, struct BombCoords** bc, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
+void drowField(struct FlagCoords** fc, struct OpenCells** oc, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
 {
   printf("\033[0;0H");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
@@ -113,7 +138,7 @@ void drowField(struct FlagCoords** fc, struct BombCoords** bc, int row, int col,
     printf("║ ");
     for(int i = 0; i < row; i++)
     {
-      char* sum = cellCheck(*fc, *bc, i, j);
+      char* sum = cellCheck(*fc, *oc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf(ColCors "X " Reset);}
       else{printf("%s ", sum);}
@@ -136,6 +161,32 @@ void drowField(struct FlagCoords** fc, struct BombCoords** bc, int row, int col,
 
 void addFlag(struct FlagCoords** fc, int cory, int corx)
 {
+  struct FlagCoords* current_flag = *fc;
+  struct FlagCoords* prev_flag = NULL;
+
+  //проверка, есть ли элемент в структуре, если есть, то удалить
+  while (current_flag != NULL)
+  {
+    if (current_flag->x == corx && current_flag->y == cory)
+    {
+      if (prev_flag == NULL)
+      {
+        *fc = current_flag->next;
+      }
+      else
+      {
+        prev_flag->next = current_flag->next;
+      }
+
+      free(current_flag);
+      return;
+    }
+
+    prev_flag = current_flag;
+    current_flag = current_flag->next;
+  }
+
+  //добавление нового элемента
   struct FlagCoords* new_flag = (struct FlagCoords*)malloc(sizeof(struct FlagCoords));
   new_flag->x = corx;
   new_flag->y = cory;
@@ -157,6 +208,12 @@ int genCode(struct BombCoords** bc, int diff, int row, int col) {
             break;
         case HARD:
             threshold = 0.5;
+            break;
+        case VERY_HARD:
+            threshold = 0.7;
+            break;
+        case IMPOSSIBLE:
+            threshold = 0.9;
             break;
     }
 

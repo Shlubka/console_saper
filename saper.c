@@ -11,23 +11,21 @@
 
 int main(void)
 {
-  int dor;
   srand(time(NULL));
   struct BombCoords *bombCoords = NULL;
   struct FlagCoords *flagCoords = NULL;
-  int row, col, corx = 0, cory = 0, diff, x, y, width, height;
+  struct OpenCells *openoells = NULL;
+  int row, col, corx = 0, cory = 0, diff, x, y, width, height, dor;
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
   welcome(&y, &x);
-  //clear_term(&x);
   printf("Enter the field dimensions (format: 30x30) > ");
   scanf("%dx%d", &row ,&col);
   if (row > height || col > width) 
   {
     if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) > ", width / 4, height / 2) == 0) 
     {
-        // Reset row and col to default values
         row = height / 4;
         col = width / 4;
     }
@@ -39,8 +37,6 @@ int main(void)
         col = 30;
     }
   }
-  /*col = col - 1;
-  row = row - 1;*/
 
   diff = choseDifficulty();
   int num = genCode(&bombCoords, diff, row, col);
@@ -50,12 +46,10 @@ int main(void)
   while(1)
   {
     indent(&width, &height, &x, &y, col, row);
-    //clear_term(&x);
-    drowField(&flagCoords, &bombCoords, row, col, corx, cory, diff, num, &x, &y);
-    //printf("%d, %d;  %d, %d", width, height, row, col);
+    drowField(&flagCoords, &openoells, row, col, corx, cory, diff, num, &x, &y);
     scanf("\n%c", &move);
 
-    switch(move) //Определение следующего хода 
+    switch(move)
     {
     case 'w':
         corx--;
@@ -94,6 +88,7 @@ int main(void)
         addFlag(&flagCoords, corx, cory);
         break;
     default:
+        openCell(openoells, bombCoords, cory, corx);
         system("clear");
         printf("Incorect input\n");
         sleep(1);
