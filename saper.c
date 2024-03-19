@@ -46,7 +46,7 @@ int main(void)
   while(1)
   {
     indent(&width, &height, &x, &y, col, row);
-    drowField(&flagCoords, &openoells, row, col, corx, cory, diff, num, &x, &y);
+    drowField(&bombCoords, &flagCoords, &openoells, row, col, corx, cory, diff, num, &x, &y);
     scanf("\n%c", &move);
 
     switch(move)

@@ -46,6 +46,7 @@ char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* 
 {
   struct OpenCells* current_c = oc;
   struct FlagCoords* current_f = fc;
+  struct BombCoords* current_b = bc;
   while (current_c != NULL)
   {
     if (current_c->x == xi && current_c->y == yj)
@@ -110,7 +111,7 @@ int choseDifficulty()
   return diff;
 }
 
-void drowField(struct FlagCoords** fc, struct OpenCells** oc, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
+void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells** oc, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
 {
   printf("\033[0;0H");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
