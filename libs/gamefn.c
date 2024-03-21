@@ -139,7 +139,7 @@ void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells*
     printf("║ ");
     for(int i = 0; i < row; i++)
     {
-      char* sum = cellCheck(*fc, *oc, i, j);
+      char* sum = cellCheck(*bc, *fc, *oc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf(ColCors "X " Reset);}
       else{printf("%s ", sum);}
