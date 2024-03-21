@@ -44,7 +44,7 @@ void welcome(int *width, int *height)
     printf("   ██║   ╚██████╔╝    ██║ ╚═╝ ██║   ██║       ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗██╗\n");
     for (int i = 0; i < *height/2; i++){printf(" ");}
     printf("   ╚═╝    ╚═════╝     ╚═╝     ╚═╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝\n""\x1b[0m");
-    sleep(5);
+    sleep(1);
     system("clear");
   }
 }

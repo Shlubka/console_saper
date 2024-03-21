@@ -17,7 +17,7 @@ struct BombCoords
 {
   int x;
   int y;
-  short bomb;
+  char bomb;
   struct BombCoords* next;
 };
 
@@ -35,13 +35,42 @@ struct OpenCells
   char* cell;
   struct OpenCells* next;
 };
+
 enum Difficulty {
+    CUSTOM = 0
     EASY = 1,
     NORMAL = 2,
     HARD = 3,
     VERY_HARD = 4,
     IMPOSSIBLE = 5,
 };
+
+void open_open_cell(struct OpenCells** oc, int cory, int corx){
+  struct OpenCells* current_c = *oc;
+
+  // Создаем новую ячейку
+  struct OpenCells* newNode = (struct OpenCells*)malloc(sizeof(struct OpenCells));
+  newNode->x = corx;
+  newNode->y = cory;
+  newNode->cell = "&";
+  newNode->next = NULL;
+
+  // Добавляем новую ячейку в список
+  if (*oc == NULL)
+  {
+    *oc = newNode;
+  }
+  else
+  {
+    current_c = *oc;
+    while (current_c->next != NULL)
+    {
+      current_c = current_c->next;
+    }
+    current_c->next = newNode;
+  }
+}
+
 
 char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* oc, int xi, int yj)
 {
@@ -89,7 +118,7 @@ void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
       {
         // Вместо печати сообщения можно вызвать функцию обработки проигрыша
         printf("You are losing this game\n");
-        sleep(100);
+        sleep(10);
         // Дополнительные действия при проигрыше
         return; // выход из функции
       }
@@ -100,12 +129,11 @@ void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
   {
     if (current_c->x == corx && current_c->y == cory)
     {
-      // Вместо печати сообщения можно вызвать функцию обработки проигрыша
-      // Дополнительные действия при проигрыше
-      return; // выход из функции
     }
     current_c = current_c->next;
   }
+  open_open_cell(&oc, cory, corx);
+  //если ничего не нашлось в предыдущем цикле, запустить рекурсивную функцию, которая будет добовлять элементы в openoells
 }
 
 
@@ -113,10 +141,10 @@ void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
 int choseDifficulty()
 {
   int diff = 0;
-  while (diff != EASY && diff != NORMAL && diff != HARD)
+  while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
   {
     system("clear");
-    printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)> ");
+    printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)\n> ");
     scanf("%d", &diff);
   }
   return diff;
@@ -285,3 +313,5 @@ int confirmInput(int width, int height, const char* message, int defaultWidth, i
     }
     return 0;
 }
+
+
