@@ -89,9 +89,9 @@ int main(void)
         break;
     default:
         openCell(openoells, bombCoords, cory, corx);
-        system("clear");
-        printf("Incorect input\n");
-        sleep(1);
+        //system("clear");
+        //printf("Incorect input\n");
+        //sleep(1);
         break;
     }
   }

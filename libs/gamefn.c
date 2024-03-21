@@ -17,6 +17,7 @@ struct BombCoords
 {
   int x;
   int y;
+  short bomb;
   struct BombCoords* next;
 };
 
@@ -47,12 +48,20 @@ char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* 
   struct OpenCells* current_c = oc;
   struct FlagCoords* current_f = fc;
   struct BombCoords* current_b = bc;
+  while (current_b != NULL)
+  {
+    if (current_b->x == xi && current_b->y == yj)
+    {
+      //printf("@");
+      //тут мнесто @ нужно вернуть содержимое яйчейки
+      return ColRed"@"Reset;
+    }
+    current_b = current_b -> next;
+  }
   while (current_c != NULL)
   {
     if (current_c->x == xi && current_c->y == yj)
     {
-      //printf("@");
-      //тут мнесто @ нужно вернуть содержимое яйчейки
       return current_c->cell;
     }
     current_c = current_c -> next;
@@ -74,13 +83,16 @@ void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
   struct OpenCells* current_c = oc;
   while (current_b != NULL)
   {
-    if (current_b->x == corx && current_b->y == cory)
+    if (current_b->y == corx && current_b->x == cory)
     {
-      // Вместо печати сообщения можно вызвать функцию обработки проигрыша
-      printf("You are losing this game\n");
-      sleep(100);
-      // Дополнительные действия при проигрыше
-      return; // выход из функции
+      if (current_b->bomb == 1)
+      {
+        // Вместо печати сообщения можно вызвать функцию обработки проигрыша
+        printf("You are losing this game\n");
+        sleep(100);
+        // Дополнительные действия при проигрыше
+        return; // выход из функции
+      }
     }
     current_b = current_b->next;
   }
@@ -89,11 +101,10 @@ void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
     if (current_c->x == corx && current_c->y == cory)
     {
       // Вместо печати сообщения можно вызвать функцию обработки проигрыша
-      printf("You are losing this game\n");
       // Дополнительные действия при проигрыше
       return; // выход из функции
     }
-    current_b = current_b->next;
+    current_c = current_c->next;
   }
 }
 
@@ -228,6 +239,7 @@ int genCode(struct BombCoords** bc, int diff, int row, int col) {
         if (new_bomb != NULL) {
             new_bomb->x = x;
             new_bomb->y = y;
+            new_bomb->bomb = 1;
             new_bomb->next = *bc;
             *bc = new_bomb;
         }
