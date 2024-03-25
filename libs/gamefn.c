@@ -37,7 +37,7 @@ struct OpenCells
 };
 
 enum Difficulty {
-    CUSTOM = 0
+    CUSTOM = 0,
     EASY = 1,
     NORMAL = 2,
     HARD = 3,
@@ -45,30 +45,40 @@ enum Difficulty {
     IMPOSSIBLE = 5,
 };
 
-void open_open_cell(struct OpenCells** oc, int cory, int corx){
-  struct OpenCells* current_c = *oc;
+void open_open_cell(struct OpenCells** oc, int cory, int corx) {
+  /*struct OpenCells* current_cell = *oc;
+  struct OpenCells* prev_cell = NULL;
 
-  // Создаем новую ячейку
-  struct OpenCells* newNode = (struct OpenCells*)malloc(sizeof(struct OpenCells));
-  newNode->x = corx;
-  newNode->y = cory;
-  newNode->cell = "&";
-  newNode->next = NULL;
-
-  // Добавляем новую ячейку в список
-  if (*oc == NULL)
+  //проверка, есть ли элемент в структуре, если есть, то удалить
+  while (current_cell != NULL)
   {
-    *oc = newNode;
-  }
-  else
-  {
-    current_c = *oc;
-    while (current_c->next != NULL)
+    if (current_cell->x == corx && current_cell->y == cory)
     {
-      current_c = current_c->next;
+      if (prev_cell == NULL)
+      {
+        *oc = current_cell->next;
+      }
+      else
+      {
+        prev_cell->next = current_cell->next;
+      }
+
+      free(current_cell);
+      return;
     }
-    current_c->next = newNode;
-  }
+
+    prev_cell = current_cell;
+    current_cell = current_cell->next;
+  }*/
+
+  //добавление нового элемента
+  struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
+  new_cell->x = corx;
+  new_cell->y = cory;
+  new_cell->cell = "7";
+  new_cell->next = *oc;
+  *oc = new_cell;
+  printf("ggg/n");
 }
 
 
@@ -77,7 +87,7 @@ char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* 
   struct OpenCells* current_c = oc;
   struct FlagCoords* current_f = fc;
   struct BombCoords* current_b = bc;
-  while (current_b != NULL)
+  while (current_b != NULL) //прохлжу по структуре с бомбами
   {
     if (current_b->x == xi && current_b->y == yj)
     {
@@ -87,15 +97,17 @@ char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* 
     }
     current_b = current_b -> next;
   }
-  while (current_c != NULL)
+  while (current_c != NULL) //прохожу по структуре с открытыми слетками
   {
     if (current_c->x == xi && current_c->y == yj)
     {
+      //printf("ok");
       return current_c->cell;
+      //return "$";
     }
     current_c = current_c -> next;
   }
-  while (current_f != NULL)
+  while (current_f != NULL) //прохожу по структуре с флагами
   {
     if (current_f->x == xi && current_f->y == yj)
     {
@@ -141,7 +153,7 @@ void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
 int choseDifficulty()
 {
   int diff = 0;
-  while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
+  while (diff != EASY && diff != NORMAL && diff != HARD)
   {
     system("clear");
     printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)\n> ");
@@ -150,7 +162,7 @@ int choseDifficulty()
   return diff;
 }
 
-void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells** oc, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
+void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells* oc, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
 {
   printf("\033[0;0H");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
@@ -178,7 +190,7 @@ void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells*
     printf("║ ");
     for(int i = 0; i < row; i++)
     {
-      char* sum = cellCheck(*bc, *fc, *oc, i, j);
+      char* sum = cellCheck(*bc, *fc, oc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf(ColCors "X " Reset);}
       else{printf("%s ", sum);}
@@ -196,7 +208,7 @@ void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells*
   for (int j = 0; j < row; j++){printf("══");}
   printf("╝\n");
   fflush(stdout); // очищаем буфер вывода после каждой операции вывода
-  //printf("%d, %d, %d, %d, %d", corx, cory, row, col, num);
+  printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
 }
 
 void addFlag(struct FlagCoords** fc, int cory, int corx)
@@ -302,7 +314,7 @@ int confirmInput(int width, int height, const char* message, int defaultWidth, i
         printf("%s", message);
         getchar();  // Clear newline character from previous input
         if (fgets(ok, sizeof ok, stdin) == NULL || strcmp(ok, "\n") == 0) {
-            break;
+            return 1;
         } else if (strcasecmp(ok, "yes\n") == 0 || strcasecmp(ok, "y\n") == 0 || strcasecmp(ok, "1\n") == 0) {
             return 1;
         } else if (strcasecmp(ok, "no\n") == 0 || strcasecmp(ok, "n\n") == 0 || strcasecmp(ok, "2\n") == 0) {

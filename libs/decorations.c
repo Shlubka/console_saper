@@ -3,7 +3,7 @@
 #include <unistd.h>
 void welcome(int *width, int *height)
 {
-  system("clear");
+  //system("clear");
   //printf("%d, %d", *width, *height);
   //printf("Welcome to my game\n");
   printf("\x1b[32m" );
@@ -44,7 +44,7 @@ void welcome(int *width, int *height)
     printf("   ██║   ╚██████╔╝    ██║ ╚═╝ ██║   ██║       ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗██╗\n");
     for (int i = 0; i < *height/2; i++){printf(" ");}
     printf("   ╚═╝    ╚═════╝     ╚═╝     ╚═╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝\n""\x1b[0m");
-    sleep(1);
+    sleep(5);
     system("clear");
   }
 }
