@@ -53,43 +53,56 @@ float thcust(){
   return th;
 }
 
-void open_open_cell(struct OpenCells** oc, int cory, int corx) {
-  int tempx = corx - 1;
-  int tempy = cory - 1;
-  /*struct OpenCells* current_cell = *oc;
-  struct OpenCells* prev_cell = NULL;
 
-  //проверка, есть ли элемент в структуре, если есть, то удалить
-  while (current_cell != NULL)
-  {
-    if (current_cell->x == corx && current_cell->y == cory)
-    {
-      if (prev_cell == NULL)
-      {
-        *oc = current_cell->next;
-      }
-      else
-      {
-        prev_cell->next = current_cell->next;
-      }
-
-      free(current_cell);
-      return;
+void create_new_open_cell(struct OpenCells** oc, int x, int y) {
+    struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
+    if (new_cell == NULL) {
+        return;
     }
 
-    prev_cell = current_cell;
-    current_cell = current_cell->next;
-  }*/
-
-  //добавление нового элемента
-  struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
-  new_cell->x = corx;
-  new_cell->y = cory;
-  new_cell->cell = "#";
-  new_cell->next = *oc;
-  *oc = new_cell;
-  printf("ggg/n");
+    new_cell->x = x;
+    new_cell->y = y;
+    new_cell->cell = "#";
+    new_cell->next = *oc;
+    *oc = new_cell;
 }
+
+void open_open_cell(struct OpenCells** oc, int cory, int corx, int col, int row) {
+    int tempx, tempy;
+
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            tempx = corx + i;
+            tempy = cory + j;
+            create_new_open_cell(oc, tempx, tempy);
+        }
+    }
+
+    for (int i = row - 1; i >= 0; i--) {
+        for (int j = col - 1; j >= 0; j--) {
+            tempx = corx - i;
+            tempy = cory - j;
+            create_new_open_cell(oc, tempx, tempy);
+        }
+    }
+
+    for (int i = row - 1; i >= 0; i--) {
+        for (int j = 0; j < col; j++) {
+            tempx = corx - i;
+            tempy = cory + j;
+            create_new_open_cell(oc, tempx, tempy);
+        }
+    }
+
+    for (int i = 0; i < row; i++) {
+        for (int j = col - 1; j >= 0; j--) {
+            tempx = corx + i;
+            tempy = cory - j;
+            create_new_open_cell(oc, tempx, tempy);
+        }
+    }
+}
+
 
 
 char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* oc, int xi, int yj)
@@ -128,43 +141,10 @@ char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* 
   return "?";
 }
 
-void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
-{
-  struct BombCoords* current_b = bc;
-  struct OpenCells* current_c = oc;
-  while (current_b != NULL)
-  {
-    if (current_b->y == corx && current_b->x == cory)
-    {
-      if (current_b->bomb == 1)
-      {
-        // Вместо печати сообщения можно вызвать функцию обработки проигрыша
-        printf("You are losing this game\n");
-        sleep(10);
-        // Дополнительные действия при проигрыше
-        return; // выход из функции
-      }
-    }
-    current_b = current_b->next;
-  }
-  while (current_c != NULL)
-  {
-    if (current_c->x == corx && current_c->y == cory)
-    {
-    }
-    current_c = current_c->next;
-  }
-  open_open_cell(&oc, cory, corx);
-  //если ничего не нашлось в предыдущем цикле, запустить рекурсивную функцию, которая будет добовлять элементы в openoells
-}
-
-
-
 int choseDifficulty()
 {
   int diff = 9;
   while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
-  //while (diff != EASY && diff != NORMAL && diff != HARD && diff != CUSTOM)
   {
     system("clear");
     printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)\n> ");
@@ -289,34 +269,12 @@ int genCode(struct BombCoords** bc, int diff, int row, int col) {
     }
 
     numBombs = totalCells * threshold;
-    numBombs = numBombs + 2;
+    numBombs = numBombs;
     //переделать в while
     int x = rand() % row;
     int y = rand() % col;
     int i = 0;
-    /*while (i < numBombs) {
-      struct BombCoords* current = *bc;
-
-      while (current != NULL) {
-          if (current->x == x && current->y == y && current->bomb == 1) {
-              // Элемент с такими координатами уже существует пропустить итерацию
-              goto skip;
-          }
-          current = current->next;
-      }
-      struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
-      if (new_bomb != NULL) {
-        new_bomb->x = x;
-        new_bomb->y = y;
-        new_bomb->bomb = 1;
-        new_bomb->next = *bc;
-        *bc = new_bomb;
-        i++;
-      }
-      skip:
-      i++;
-    }*/
-    for (int i = 0; i < numBombs; i++) {
+    for (int i = 0; i < numBombs + 2; i++) {
         int x = rand() % row;
         int y = rand() % col;
 
@@ -329,14 +287,14 @@ int genCode(struct BombCoords** bc, int diff, int row, int col) {
         *bc = new_bomb;
     }
     }
-    return numBombs - 2;
+    return numBombs;
 }
 
 
 int doureal ()
 {
     char yn[4];
-    disableRawMode();
+    //disableRawMode();
     while (1) {
         printf("Do you really want to quit the game? (no/yes): ");
         scanf("%3s", yn);

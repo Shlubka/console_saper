@@ -48,3 +48,5 @@ void welcome(int *width, int *height)
     system("clear");
   }
 }
+
+

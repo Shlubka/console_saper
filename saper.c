@@ -73,6 +73,7 @@ int main(void)
         break;
     case 'q':
         system("clear");
+        disableRawMode();
         dor = doureal();
         if (dor == 2)
         {
@@ -88,7 +89,7 @@ int main(void)
         addFlag(&flagCoords, corx, cory);
         break;
     default:
-        open_open_cell(&opencells, corx, cory);
+        open_open_cell(&opencells, corx, cory, col, row);
         //openCell(opencells, bombCoords, cory, corx);
         //system("clear");
         //printf("Incorect input\n");
