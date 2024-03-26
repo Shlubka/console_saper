@@ -45,7 +45,17 @@ enum Difficulty {
     IMPOSSIBLE = 5,
 };
 
+float thcust(){
+  float th = 0;
+  printf("Enter your custom persentage of bombs > ");
+  scanf("%f", &th);
+  th = th * 0.01;
+  return th;
+}
+
 void open_open_cell(struct OpenCells** oc, int cory, int corx) {
+  int tempx = corx - 1;
+  int tempy = cory - 1;
   /*struct OpenCells* current_cell = *oc;
   struct OpenCells* prev_cell = NULL;
 
@@ -75,7 +85,7 @@ void open_open_cell(struct OpenCells** oc, int cory, int corx) {
   struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
   new_cell->x = corx;
   new_cell->y = cory;
-  new_cell->cell = "7";
+  new_cell->cell = "#";
   new_cell->next = *oc;
   *oc = new_cell;
   printf("ggg/n");
@@ -152,8 +162,9 @@ void openCell(struct OpenCells* oc, struct BombCoords* bc, int cory, int corx)
 
 int choseDifficulty()
 {
-  int diff = 0;
-  while (diff != EASY && diff != NORMAL && diff != HARD)
+  int diff = 9;
+  while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
+  //while (diff != EASY && diff != NORMAL && diff != HARD && diff != CUSTOM)
   {
     system("clear");
     printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)\n> ");
@@ -170,6 +181,9 @@ void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells*
   if (diff == 1){printf("easy\n");}
   else if (diff == 2){printf("normal\n");}
   else if (diff == 3){printf("hard\n");}
+  else if (diff == 4){printf("very hard\n");}
+  else if (diff == 5){printf("IMPOSSIBLE\n");}
+  else if (diff == 0){printf("custom\n");}
   for (int n = 0; n < *y; n++)
   {
     printf("\n");
@@ -247,11 +261,16 @@ void addFlag(struct FlagCoords** fc, int cory, int corx)
 }
 
 int genCode(struct BombCoords** bc, int diff, int row, int col) {
+    /*row = row -1;
+    col = col -1;*/
     int totalCells = row * col;
     int numBombs = 0;
     double threshold = 0.0;
 
     switch (diff) {
+        case CUSTOM:
+            threshold = thcust();
+            break;
         case EASY:
             threshold = 0.1;
             break;
@@ -270,21 +289,47 @@ int genCode(struct BombCoords** bc, int diff, int row, int col) {
     }
 
     numBombs = totalCells * threshold;
+    numBombs = numBombs + 2;
+    //переделать в while
+    int x = rand() % row;
+    int y = rand() % col;
+    int i = 0;
+    /*while (i < numBombs) {
+      struct BombCoords* current = *bc;
 
+      while (current != NULL) {
+          if (current->x == x && current->y == y && current->bomb == 1) {
+              // Элемент с такими координатами уже существует пропустить итерацию
+              goto skip;
+          }
+          current = current->next;
+      }
+      struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
+      if (new_bomb != NULL) {
+        new_bomb->x = x;
+        new_bomb->y = y;
+        new_bomb->bomb = 1;
+        new_bomb->next = *bc;
+        *bc = new_bomb;
+        i++;
+      }
+      skip:
+      i++;
+    }*/
     for (int i = 0; i < numBombs; i++) {
         int x = rand() % row;
         int y = rand() % col;
 
-        struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
-        if (new_bomb != NULL) {
-            new_bomb->x = x;
-            new_bomb->y = y;
-            new_bomb->bomb = 1;
-            new_bomb->next = *bc;
-            *bc = new_bomb;
-        }
+      struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
+      if (new_bomb != NULL) {
+        new_bomb->x = x;
+        new_bomb->y = y;
+        new_bomb->bomb = 1;
+        new_bomb->next = *bc;
+        *bc = new_bomb;
     }
-    return numBombs;
+    }
+    return numBombs - 2;
 }
 
 

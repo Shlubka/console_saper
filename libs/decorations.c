@@ -3,7 +3,7 @@
 #include <unistd.h>
 void welcome(int *width, int *height)
 {
-  //system("clear");
+  system("clear");
   //printf("%d, %d", *width, *height);
   //printf("Welcome to my game\n");
   printf("\x1b[32m" );
@@ -14,7 +14,7 @@ void welcome(int *width, int *height)
   if (*height <= 75)
   {
     printf("Welcome to my game\n""\x1b[0m");
-    sleep(5);
+    sleep(2);
     system("clear");
     //printf("\n");
 
