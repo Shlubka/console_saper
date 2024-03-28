@@ -72,10 +72,10 @@ void open_open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int
     struct BombCoords* current_b = *bc;
     int found = 0; // Флаг для указания на наличие элемента
 
-    for (int i = 0; i < row; i++) {
         for (int j = 0; j < col; j++) {
-            tempx = corx + i;
             tempy = cory + j;
+    for (int i = 0; i < row; i++) {
+            tempx = corx + i;
 
             while (current_b != NULL) {
                 if (current_b->x == tempx && current_b->y == tempy) {
@@ -93,9 +93,6 @@ void open_open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int
             current_b = *bc; // Возвращаем указатель обратно в начало списка
         }
 
-        if (found) {
-            break; // Прерываем внешний цикл
-        }
     }
 
 
