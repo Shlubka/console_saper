@@ -68,24 +68,36 @@ void create_new_open_cell(struct OpenCells** oc, int x, int y) {
 }
 
 void open_open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
-  int tempx, tempy;
-  struct BombCoords* current_b = *bc;
+    int tempx, tempy;
+    struct BombCoords* current_b = *bc;
+    int found = 0; // Флаг для указания на наличие элемента
 
-  for (int i = 0; i < row; i++) {
-    for (int j = 0; j < col; j++) {
-      tempx = corx + i;
-      tempy = cory + j;
-      while (current_b != NULL)
-      {
-        if (current_b->x == tempx && current_b->y == tempy)
-        {
-          break;
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            tempx = corx + i;
+            tempy = cory + j;
+
+            while (current_b != NULL) {
+                if (current_b->x == tempx && current_b->y == tempy) {
+                    found = 1;
+                    break; // Нашли элемент, прерываем цикл
+                }
+                current_b = current_b->next;
+            }
+
+            if (found) {
+                break; // Прерываем внешний цикл
+            }
+
+            create_new_open_cell(oc, tempx, tempy);
+            current_b = *bc; // Возвращаем указатель обратно в начало списка
         }
-        current_b = current_b -> next;
-        create_new_open_cell(oc, tempx, tempy);
-      }
+
+        if (found) {
+            break; // Прерываем внешний цикл
+        }
     }
-  }
+
 
   current_b = *bc;
   for (int i = row - 1; i >= 0; i--) {
