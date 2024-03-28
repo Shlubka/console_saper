@@ -19,7 +19,7 @@ int main(void)
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
-  welcome(&y, &x);
+  //welcome(&y, &x);
   printf("Enter the field dimensions (format: 30x30) > ");
   scanf("%dx%d", &row ,&col);
   if (row > height || col > width) 
@@ -89,7 +89,7 @@ int main(void)
         addFlag(&flagCoords, corx, cory);
         break;
     default:
-        open_open_cell(&opencells, corx, cory, col, row);
+        open_open_cell(&bombCoords, &opencells, corx, cory, col, row);
         //openCell(opencells, bombCoords, cory, corx);
         //system("clear");
         //printf("Incorect input\n");

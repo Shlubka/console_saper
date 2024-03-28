@@ -8,10 +8,11 @@ void welcome(int *width, int *height)
   //printf("Welcome to my game\n");
   printf("\x1b[32m" );
 
+
     for (int i = 0; i < *width/2; i++){printf("\n");}
     for (int i = 0; i < *height/2; i++){printf(" ");}
 
-  if (*height <= 75)
+  if (*height <= 50)
   {
     printf("Welcome to my game\n""\x1b[0m");
     sleep(2);

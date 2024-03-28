@@ -67,40 +67,76 @@ void create_new_open_cell(struct OpenCells** oc, int x, int y) {
     *oc = new_cell;
 }
 
-void open_open_cell(struct OpenCells** oc, int cory, int corx, int col, int row) {
-    int tempx, tempy;
+void open_open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
+  int tempx, tempy;
+  struct BombCoords* current_b = *bc;
 
-    for (int i = 0; i < row; i++) {
-        for (int j = 0; j < col; j++) {
-            tempx = corx + i;
-            tempy = cory + j;
-            create_new_open_cell(oc, tempx, tempy);
+  for (int i = 0; i < row; i++) {
+    for (int j = 0; j < col; j++) {
+      tempx = corx + i;
+      tempy = cory + j;
+      while (current_b != NULL)
+      {
+        if (current_b->x == tempx && current_b->y == tempy)
+        {
+          break;
         }
+        current_b = current_b -> next;
+        create_new_open_cell(oc, tempx, tempy);
+      }
     }
+  }
 
-    for (int i = row - 1; i >= 0; i--) {
-        for (int j = col - 1; j >= 0; j--) {
-            tempx = corx - i;
-            tempy = cory - j;
-            create_new_open_cell(oc, tempx, tempy);
+  current_b = *bc;
+  for (int i = row - 1; i >= 0; i--) {
+    for (int j = col - 1; j >= 0; j--) {
+      tempx = corx - i;
+      tempy = cory - j;
+      while (current_b != NULL) //прохлжу по структуре с бомбами
+      {
+        if (current_b->x == tempx && current_b->y == tempy)
+        {
+          break;
         }
+        current_b = current_b -> next;
+        create_new_open_cell(oc, tempx, tempy);
+      }
     }
+  }
 
-    for (int i = row - 1; i >= 0; i--) {
-        for (int j = 0; j < col; j++) {
-            tempx = corx - i;
-            tempy = cory + j;
-            create_new_open_cell(oc, tempx, tempy);
+  current_b = *bc;
+  for (int i = row - 1; i >= 0; i--) {
+    for (int j = 0; j < col; j++) {
+      tempx = corx - i;
+      tempy = cory + j;
+      while (current_b != NULL) //прохлжу по структуре с бомбами
+      {
+        if (current_b->x == tempx && current_b->y == tempy)
+        {
+          break;
         }
+        current_b = current_b -> next;
+        create_new_open_cell(oc, tempx, tempy);
+      }
     }
+  }
 
-    for (int i = 0; i < row; i++) {
-        for (int j = col - 1; j >= 0; j--) {
-            tempx = corx + i;
-            tempy = cory - j;
-            create_new_open_cell(oc, tempx, tempy);
+  current_b = *bc;
+  for (int i = 0; i < row; i++) {
+    for (int j = col - 1; j >= 0; j--) {
+      tempx = corx + i;
+      tempy = cory - j;
+      while (current_b != NULL) //прохлжу по структуре с бомбами
+      {
+        if (current_b->x == tempx && current_b->y == tempy)
+        {
+          break;
         }
+        current_b = current_b -> next;
+        create_new_open_cell(oc, tempx, tempy);
+      }
     }
+  }
 }
 
 
