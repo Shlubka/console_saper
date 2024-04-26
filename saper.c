@@ -19,7 +19,7 @@ int main(void)
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
-  //welcome(&y, &x);
+  welcome(&y, &x);
   printf("Enter the field dimensions (format: 30x30) > ");
   scanf("%dx%d", &row ,&col);
   if (row > height || col > width) 
@@ -78,6 +78,7 @@ int main(void)
         if (dor == 2)
         {
           //printf("%d\n", dor);
+          system("killall mpv");
           return 0;
         }
         else if (dor == 1)
@@ -88,8 +89,11 @@ int main(void)
     case 'f':
         addFlag(&flagCoords, corx, cory);
         break;
+    case '~':
+        cli_command();
+        break;
     default:
-        open_open_cell(&bombCoords, &opencells, corx, cory, col, row);
+        open_cell(&bombCoords, &opencells, corx, cory, col, row);
         //openCell(opencells, bombCoords, cory, corx);
         //system("clear");
         //printf("Incorect input\n");

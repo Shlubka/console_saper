@@ -53,6 +53,7 @@ float thcust(){
   return th;
 }
 
+void CLI_open(){}
 
 void create_new_open_cell(struct OpenCells** oc, int x, int y) {
     struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
@@ -67,7 +68,7 @@ void create_new_open_cell(struct OpenCells** oc, int x, int y) {
     *oc = new_cell;
 }
 
-void open_open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
+/*void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
     int tempx, tempy;
     struct BombCoords* current_b = *bc;
     int found = 0; // Флаг для указания на наличие элемента
@@ -146,7 +147,46 @@ void open_open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int
       }
     }
   }
+}*/
+
+
+
+
+
+
+
+
+void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
+  int tempx, tempy;
+  struct BombCoords* current_b = *bc;
+  int found = 0; // Флаг для указания на наличие элемента
+
+  for (int j = 0; j < col; j++) {
+    tempy = cory + j;
+    for (int i = 0; i < row; i++) {
+      tempx = corx + i;
+
+        while (current_b != NULL) {
+          if (current_b->x == tempx && current_b->y == tempy) {
+            found = 1;
+            break; // Нашли элемент, прерываем цикл
+          }
+          current_b = current_b->next;
+        }
+
+        if (found) {
+          break; // Прерываем внешний цикл
+        }
+
+        create_new_open_cell(oc, tempx, tempy);
+        current_b = *bc; // Возвращаем указатель обратно в начало списка
+    }
+  }
 }
+
+
+
+
 
 
 
@@ -375,3 +415,4 @@ int confirmInput(int width, int height, const char* message, int defaultWidth, i
 }
 
 
+void cli_command(){}
