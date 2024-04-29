@@ -89,9 +89,17 @@ int main(void)
     case 'f':
         addFlag(&flagCoords, corx, cory);
         break;
-    case '~':
-        cli_command();
+    case '`':
+        //printf("pisun");
+        //sleep(2);
+        //cli_command();
         break;
+    case '1':
+      system("mpv --loop=inf --quiet --no-video --no-terminal libs/1.mp3");
+      break;
+    case '2':
+      system("killall mpv;clear");
+      break;
     default:
         open_cell(&bombCoords, &opencells, corx, cory, col, row);
         //openCell(opencells, bombCoords, cory, corx);

@@ -55,19 +55,96 @@ float thcust(){
 
 void CLI_open(){}
 
-void create_new_open_cell(struct OpenCells** oc, int x, int y) {
+/*void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, int y) {
+       struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
+       struct BombCoords* current_b = *bc;
+       if (new_cell == NULL) {
+         return;
+       }
+    
+      int f_num = 0;
+       for (int i = -1; i < 2; i++){
+         for (int j = -1; j < 2; j++){
+          while (current_b != NULL) {
+            if (current_b->x == x-i && current_b->y == y-j) {
+              f_num += 1;
+          }
+          current_b = current_b->next; // Add this line to move to the next BombCoords
+        }
+      }
+   
+     new_cell->x = x;
+      new_cell->y = y;
+      char f_num_str[2]; // Create a string to hold the converted f_num
+      if (f_num > 0){
+        sprintf(f_num_str, "%d", f_num); // Convert f_num to a string
+      } else (sprintf(f_num_str, "#"));
+      printf("create_new_open_cell");
+      new_cell->cell = strdup(f_num_str); // Duplicate the string and assign it to new_cell->cell
+      new_cell->next = *oc;
+      *oc = new_cell;
+    }
+    }*/
+
+void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, int y) {
     struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
+    struct BombCoords* current_b = *bc;
     if (new_cell == NULL) {
         return;
     }
 
+    int f_num = 0;
+    int temx, tempy;
+    for (int i = -1; i < 2; i++){
+      temx = x - i;
+      for (int j = -1; j < 2; j++){
+        tempy = y - j;
+            while (current_b != NULL) {
+                if (current_b->x == temx && current_b->y == tempy) {
+                    f_num += 1;
+                }
+                current_b = current_b->next;
+            }
+        }
+    }
+
     new_cell->x = x;
     new_cell->y = y;
-    new_cell->cell = "#";
+    switch (f_num) {
+      case 1:
+        new_cell->cell = "1";
+        break;
+      case 2:
+        new_cell->cell = "2";
+        break;
+      case 3:
+        new_cell->cell = "3";
+        break;
+      case 4:
+        new_cell->cell = "4";
+        break;
+      case 5:
+        new_cell->cell = "5";
+        break;
+      case 6:
+        new_cell->cell = "6";
+        break;
+      case 7:
+        new_cell->cell = "7";
+        break;
+      case 8:
+        new_cell->cell = "8";
+        break;
+      case 0:
+        new_cell->cell = "#";
+        break;
+      default:
+        new_cell->cell = "*";
+        break;
+    } 
     new_cell->next = *oc;
     *oc = new_cell;
 }
-
 /*void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
     int tempx, tempy;
     struct BombCoords* current_b = *bc;
@@ -178,7 +255,51 @@ void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx
           break; // Прерываем внешний цикл
         }
 
-        create_new_open_cell(oc, tempx, tempy);
+        create_new_open_cell(bc, oc, tempx, tempy);
+        current_b = *bc; // Возвращаем указатель обратно в начало списка
+    }
+  }
+
+   for (int j = 0; tempy > 0; j++) {
+    tempy = cory - j;
+    for (int i = 0; tempx > 0; i++) {
+      tempx = corx + i;
+
+        while (current_b != NULL) {
+          if (current_b->x == tempx && current_b->y == tempy) {
+            found = 1;
+            break; // Нашли элемент, прерываем цикл
+          }
+          current_b = current_b->next;
+        }
+
+        if (found) {
+          break; // Прерываем внешний цикл
+        }
+
+        create_new_open_cell(bc, oc, tempx, tempy);
+        current_b = *bc; // Возвращаем указатель обратно в начало списка
+    }
+  }
+ 
+   for (int j = 0; j > cory; j++) {
+    tempy = cory - j;
+    for (int i = 0; corx > 0; i++) {
+      tempx = corx + i;
+
+        while (current_b != NULL) {
+          if (current_b->x == tempx && current_b->y == tempy) {
+            found = 1;
+            break; // Нашли элемент, прерываем цикл
+          }
+          current_b = current_b->next;
+        }
+
+        if (found) {
+          break; // Прерываем внешний цикл
+        }
+
+        create_new_open_cell(bc, oc, tempx, tempy);
         current_b = *bc; // Возвращаем указатель обратно в начало списка
     }
   }
@@ -288,6 +409,7 @@ void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells*
   printf("╝\n");
   fflush(stdout); // очищаем буфер вывода после каждой операции вывода
   printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
+  printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
 }
 
 void addFlag(struct FlagCoords** fc, int cory, int corx)
