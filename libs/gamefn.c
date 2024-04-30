@@ -94,19 +94,37 @@ void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, 
     }
 
     int f_num = 0;
-    int temx, tempy;
-    for (int i = -1; i < 2; i++){
-      temx = x - i;
-      for (int j = -1; j < 2; j++){
-        tempy = y - j;
+    int tempx, tempy;
+    /*for (int i = 1; i > -2; i--){
+      tempx = y + i;
+      for (int j = 1; j > -2; j--){
+        tempy = x + j;
             while (current_b != NULL) {
-                if (current_b->x == temx && current_b->y == tempy) {
+                if (current_b->x == tempx && current_b->y == tempx) {
                     f_num += 1;
                 }
                 current_b = current_b->next;
             }
         }
+    }*/
+
+
+    for (int i = -1; i <= 1; i++){
+        tempx = x + i;
+        for (int j = -1; j <= 1; j++){
+            tempy = y + j;
+
+            while (current_b != NULL) {
+                if (current_b->x == tempx && current_b->y == tempy) {
+                    f_num += 1;
+                }
+                current_b = current_b->next;
+            }
+            current_b = *bc; // сброс текущей бомбы в начало списка перед проверкой новой клетки
+        }
     }
+
+
 
     new_cell->x = x;
     new_cell->y = y;
@@ -282,7 +300,7 @@ void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx
     }
   }
  
-   for (int j = 0; j > cory; j++) {
+   /*for (int j = 0; j > cory; j++) {
     tempy = cory - j;
     for (int i = 0; corx > 0; i++) {
       tempx = corx + i;
@@ -302,7 +320,7 @@ void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx
         create_new_open_cell(bc, oc, tempx, tempy);
         current_b = *bc; // Возвращаем указатель обратно в начало списка
     }
-  }
+  }*/
 }
 
 
@@ -316,23 +334,19 @@ char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* 
   struct OpenCells* current_c = oc;
   struct FlagCoords* current_f = fc;
   struct BombCoords* current_b = bc;
-  while (current_b != NULL) //прохлжу по структуре с бомбами
+  /*while (current_b != NULL) //прохлжу по структуре с бомбами
   {
     if (current_b->x == xi && current_b->y == yj)
     {
-      //printf("@");
-      //тут мнесто @ нужно вернуть содержимое яйчейки
       return ColRed"@"Reset;
     }
     current_b = current_b -> next;
-  }
+  }*/
   while (current_c != NULL) //прохожу по структуре с открытыми слетками
   {
     if (current_c->x == xi && current_c->y == yj)
     {
-      //printf("ok");
       return current_c->cell;
-      //return "$";
     }
     current_c = current_c -> next;
   }
@@ -483,6 +497,7 @@ int genCode(struct BombCoords** bc, int diff, int row, int col) {
     int i = 0;
     for (int i = 0; i < numBombs + 2; i++) {
         int x = rand() % row;
+        if (x == 0){x -= 1;}
         int y = rand() % col;
 
       struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
