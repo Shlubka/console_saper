@@ -10,6 +10,7 @@
 #define Reset "\x1b[0m"//белый
 #define ColRed "\x1b[31m"
 #define ColCors "\x1b[32m"
+#define ColNum "\x1b[33m"
 //#define reset_curs printf("")
 
 
@@ -130,28 +131,28 @@ void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, 
     new_cell->y = y;
     switch (f_num) {
       case 1:
-        new_cell->cell = "1";
+        new_cell->cell = ColNum"1"Reset;
         break;
       case 2:
-        new_cell->cell = "2";
+        new_cell->cell = ColNum"2"Reset;
         break;
       case 3:
-        new_cell->cell = "3";
+        new_cell->cell = ColNum"3"Reset;
         break;
       case 4:
-        new_cell->cell = "4";
+        new_cell->cell = ColNum"4"Reset;
         break;
       case 5:
-        new_cell->cell = "5";
+        new_cell->cell = ColNum"5"Reset;
         break;
       case 6:
-        new_cell->cell = "6";
+        new_cell->cell = ColNum"6"Reset;
         break;
       case 7:
-        new_cell->cell = "7";
+        new_cell->cell = ColNum"7"Reset;
         break;
       case 8:
-        new_cell->cell = "8";
+        new_cell->cell = ColNum"8"Reset;
         break;
       case 0:
         new_cell->cell = "#";
@@ -334,14 +335,14 @@ char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* 
   struct OpenCells* current_c = oc;
   struct FlagCoords* current_f = fc;
   struct BombCoords* current_b = bc;
-  /*while (current_b != NULL) //прохлжу по структуре с бомбами
+  while (current_b != NULL) //прохлжу по структуре с бомбами
   {
     if (current_b->x == xi && current_b->y == yj)
     {
       return ColRed"@"Reset;
     }
     current_b = current_b -> next;
-  }*/
+  }
   while (current_c != NULL) //прохожу по структуре с открытыми слетками
   {
     if (current_c->x == xi && current_c->y == yj)
