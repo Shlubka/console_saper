@@ -54,38 +54,6 @@ float thcust(){
   return th;
 }
 
-void CLI_open(){}
-
-/*void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, int y) {
-       struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
-       struct BombCoords* current_b = *bc;
-       if (new_cell == NULL) {
-         return;
-       }
-    
-      int f_num = 0;
-       for (int i = -1; i < 2; i++){
-         for (int j = -1; j < 2; j++){
-          while (current_b != NULL) {
-            if (current_b->x == x-i && current_b->y == y-j) {
-              f_num += 1;
-          }
-          current_b = current_b->next; // Add this line to move to the next BombCoords
-        }
-      }
-   
-     new_cell->x = x;
-      new_cell->y = y;
-      char f_num_str[2]; // Create a string to hold the converted f_num
-      if (f_num > 0){
-        sprintf(f_num_str, "%d", f_num); // Convert f_num to a string
-      } else (sprintf(f_num_str, "#"));
-      printf("create_new_open_cell");
-      new_cell->cell = strdup(f_num_str); // Duplicate the string and assign it to new_cell->cell
-      new_cell->next = *oc;
-      *oc = new_cell;
-    }
-    }*/
 
 void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, int y) {
     struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
@@ -96,19 +64,6 @@ void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, 
 
     int f_num = 0;
     int tempx, tempy;
-    /*for (int i = 1; i > -2; i--){
-      tempx = y + i;
-      for (int j = 1; j > -2; j--){
-        tempy = x + j;
-            while (current_b != NULL) {
-                if (current_b->x == tempx && current_b->y == tempx) {
-                    f_num += 1;
-                }
-                current_b = current_b->next;
-            }
-        }
-    }*/
-
 
     for (int i = -1; i <= 1; i++){
         tempx = x + i;
@@ -164,92 +119,6 @@ void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, 
     new_cell->next = *oc;
     *oc = new_cell;
 }
-/*void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
-    int tempx, tempy;
-    struct BombCoords* current_b = *bc;
-    int found = 0; // Флаг для указания на наличие элемента
-
-        for (int j = 0; j < col; j++) {
-            tempy = cory + j;
-    for (int i = 0; i < row; i++) {
-            tempx = corx + i;
-
-            while (current_b != NULL) {
-                if (current_b->x == tempx && current_b->y == tempy) {
-                    found = 1;
-                    break; // Нашли элемент, прерываем цикл
-                }
-                current_b = current_b->next;
-            }
-
-            if (found) {
-                break; // Прерываем внешний цикл
-            }
-
-            create_new_open_cell(oc, tempx, tempy);
-            current_b = *bc; // Возвращаем указатель обратно в начало списка
-        }
-
-    }
-
-
-  current_b = *bc;
-  for (int i = row - 1; i >= 0; i--) {
-    for (int j = col - 1; j >= 0; j--) {
-      tempx = corx - i;
-      tempy = cory - j;
-      while (current_b != NULL) //прохлжу по структуре с бомбами
-      {
-        if (current_b->x == tempx && current_b->y == tempy)
-        {
-          break;
-        }
-        current_b = current_b -> next;
-        create_new_open_cell(oc, tempx, tempy);
-      }
-    }
-  }
-
-  current_b = *bc;
-  for (int i = row - 1; i >= 0; i--) {
-    for (int j = 0; j < col; j++) {
-      tempx = corx - i;
-      tempy = cory + j;
-      while (current_b != NULL) //прохлжу по структуре с бомбами
-      {
-        if (current_b->x == tempx && current_b->y == tempy)
-        {
-          break;
-        }
-        current_b = current_b -> next;
-        create_new_open_cell(oc, tempx, tempy);
-      }
-    }
-  }
-
-  current_b = *bc;
-  for (int i = 0; i < row; i++) {
-    for (int j = col - 1; j >= 0; j--) {
-      tempx = corx + i;
-      tempy = cory - j;
-      while (current_b != NULL) //прохлжу по структуре с бомбами
-      {
-        if (current_b->x == tempx && current_b->y == tempy)
-        {
-          break;
-        }
-        current_b = current_b -> next;
-        create_new_open_cell(oc, tempx, tempy);
-      }
-    }
-  }
-}*/
-
-
-
-
-
-
 
 
 void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
@@ -300,28 +169,6 @@ void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx
         current_b = *bc; // Возвращаем указатель обратно в начало списка
     }
   }
- 
-   /*for (int j = 0; j > cory; j++) {
-    tempy = cory - j;
-    for (int i = 0; corx > 0; i++) {
-      tempx = corx + i;
-
-        while (current_b != NULL) {
-          if (current_b->x == tempx && current_b->y == tempy) {
-            found = 1;
-            break; // Нашли элемент, прерываем цикл
-          }
-          current_b = current_b->next;
-        }
-
-        if (found) {
-          break; // Прерываем внешний цикл
-        }
-
-        create_new_open_cell(bc, oc, tempx, tempy);
-        current_b = *bc; // Возвращаем указатель обратно в начало списка
-    }
-  }*/
 }
 
 
@@ -553,4 +400,3 @@ int confirmInput(int width, int height, const char* message, int defaultWidth, i
 }
 
 
-void cli_command(){}

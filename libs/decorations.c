@@ -10,7 +10,7 @@
 
 void *music_welcom(void *arg){
   //asm()
-  //system("mpv --loop=inf --quiet --no-video --no-terminal music/1.mp3");
+  system("mpv --loop=inf --quiet --no-video --no-terminal music/1.mp3");
   return NULL;
 }
 
