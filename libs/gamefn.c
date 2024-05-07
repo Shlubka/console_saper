@@ -14,28 +14,6 @@
 //#define reset_curs printf("")
 
 
-struct BombCoords
-{
-  int x;
-  int y;
-  char bomb;
-  struct BombCoords* next;
-};
-
-struct FlagCoords
-{
-  int x;
-  int y;
-  //char cell;
-  struct FlagCoords* next;
-};
-struct OpenCells
-{
-  int x;
-  int y;
-  char* cell;
-  struct OpenCells* next;
-};
 
 enum Difficulty {
     CUSTOM = 0,
@@ -55,12 +33,7 @@ float thcust(){
 }
 
 
-void create_new_open_cell(struct BombCoords** bc, struct OpenCells** oc, int x, int y) {
-    struct OpenCells* new_cell = (struct OpenCells*)malloc(sizeof(struct OpenCells));
-    struct BombCoords* current_b = *bc;
-    if (new_cell == NULL) {
-        return;
-    }
+void create_new_open_cell(char **START_GAME_FIELD, int x, int y) {
 
     int f_num = 0;
     int tempx, tempy;
@@ -221,7 +194,7 @@ int choseDifficulty()
   return diff;
 }
 
-void drowField(struct BombCoords** bc, struct FlagCoords** fc, struct OpenCells* oc, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
+void drowField(char **START_GAME_FIELD, char **WORK_FIELD, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
 {
   printf("\033[0;0H");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
@@ -309,7 +282,7 @@ void addFlag(struct FlagCoords** fc, int cory, int corx)
   *fc = new_flag;
 }
 
-int genCode(struct BombCoords** bc, int diff, int row, int col) {
+void genCode(char **START_GAME_FIELD, int diff, int row, int col) {
     /*row = row -1;
     col = col -1;*/
     int totalCells = row * col;
@@ -343,21 +316,13 @@ int genCode(struct BombCoords** bc, int diff, int row, int col) {
     int x = rand() % row;
     int y = rand() % col;
     int i = 0;
-    for (int i = 0; i < numBombs + 2; i++) {
+    for (int i = 0; i < numBombs; i++) {
         int x = rand() % row;
-        if (x == 0){x -= 1;}
         int y = rand() % col;
 
-      struct BombCoords* new_bomb = (struct BombCoords*)malloc(sizeof(struct BombCoords));
-      if (new_bomb != NULL) {
-        new_bomb->x = x;
-        new_bomb->y = y;
-        new_bomb->bomb = 1;
-        new_bomb->next = *bc;
-        *bc = new_bomb;
-    }
-    }
-    return numBombs;
+        if (START_GAME_FIELD[x][y] == i){i -=; continue;}
+        else {START_GAME_FIELD[x][y] = i;}
+
 }
 
 

@@ -8,10 +8,31 @@
 #include <unistd.h>
 
 
-void *music_welcom(void *arg){
-  //asm()
-  system("mpv --loop=inf --quiet --no-video --no-terminal music/1.mp3");
-  return NULL;
+#include <stdio.h>
+#include <unistd.h>
+
+
+
+
+void *music_welcome(void *arg) {
+    char* argv[] = {"mpv", "--loop=inf", "--quiet", "--no-video", "--no-terminal", "music/1.mp3", NULL};
+    char* envp[] = {NULL};
+
+    register char** arg_ptr asm("x0") = argv;
+    register char** env_ptr asm("x1") = envp;
+    register int fd asm("x2") = 0;
+
+    asm volatile (
+        "mov x8, #0\n"
+        "svc #0\n"
+        :
+        : "r" (arg_ptr), "r" (env_ptr), "r" (fd)
+        : "x8", "memory", "cc"
+    );
+
+    // Если execve вернул управление, значит произошла ошибка
+    perror("execve");
+    return NULL;
 }
 
 void *welcome_print(void *arg)
@@ -71,7 +92,7 @@ void welcome(int *width, int *height){
   pthread_t t1, t2;
   int params[2] = {*width, *height};
 
-  pthread_create(&t1, NULL, music_welcom, NULL);
+  pthread_create(&t1, NULL, music_welcome, NULL);
   pthread_create(&t1, NULL, welcome_print, (void*)params);
   //welcome_print(width, height);
   //pthread_create(&t2, NULL, welcome_print, NULL)t

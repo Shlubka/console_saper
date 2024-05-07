@@ -12,9 +12,6 @@
 int main(void)
 {
   srand(time(NULL));
-  struct BombCoords *bombCoords = NULL;
-  struct FlagCoords *flagCoords = NULL;
-  struct OpenCells *opencells = NULL;
   int row, col, corx = 0, cory = 0, diff, x, y, width, height, dor;
   char move;
   term_size(&height, &width);
@@ -39,7 +36,21 @@ int main(void)
   }
 
   diff = choseDifficulty();
-  int num = genCode(&bombCoords, diff, row, col);
+
+  //allocation memmory to fields
+  char **START_GAME_FIELD = (char **)malloc(x * sizeof(char *));
+  for (int i = 0; i < x; i++)
+  {
+    START_GAME_FIELD[i] = (char *)malloc(y * sizeof(char));
+  }
+  char **WORK_FIELD = (char **)malloc(x * sizeof(char *));
+  for (int i = 0; i < x; i++)
+  {
+    WORK_FIELD[i] = (char *)malloc(y * sizeof(char));
+  }
+  //allocation memmory to fields
+
+  genCode(START_GAME_FIELD, diff, row, col);
 
   enableRawMode();
   system("clear");
