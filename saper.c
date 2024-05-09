@@ -9,6 +9,13 @@
 #include "libs/decorations.c"
 #include "libs/gamefn.h"
 
+
+void dryFd()
+{
+  printf("enter funck");
+}
+
+
 int main(void)
 {
   srand(time(NULL));
@@ -35,7 +42,7 @@ int main(void)
     }
   }
 
-  diff = choseDifficulty();
+  //diff = choseDifficulty();
 
   //allocation memmory to fields
   char **START_GAME_FIELD = (char **)malloc(x * sizeof(char *));
@@ -57,15 +64,16 @@ int main(void)
 
   //genCode(START_GAME_FIELD, diff, row, col);
 
-  enableRawMode();
+  //enableRawMode();
   system("clear");
   printf("ok");
-  sleep(1);
+  //sleep(1); //этого нельзя
   while(1)
   {
-    printf("ok");;
+    dryFd();
+    /*printf("ok");;
     indent(&width, &height, &x, &y, col, row);
-    //drowField(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, row, col, corx, cory, diff, &x, &y);
+    dryFd();
     scanf("\n%c", &move);
 
     switch(move)
@@ -113,12 +121,12 @@ int main(void)
         sleep(2);
         //cli_command();
         break;
-    /*case '1':
+    case '1':
       system("mpv --loop=inf --quiet --no-video --no-terminal libs/1.mp3");
       break;
     case '2':
       system("killall mpv;clear");
-      break;*/
+      break;
     default:
         //open_cell(&bombCoords, &opencells, corx, cory, col, row);
         //openCell(opencells, bombCoords, cory, corx);
@@ -126,7 +134,10 @@ int main(void)
         //printf("Incorect input\n");
         //sleep(1);
         break;
-    }
-  }
+  }*/
 }
+  system("killall mpv");
+}
+
+
 
