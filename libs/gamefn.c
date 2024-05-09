@@ -13,16 +13,23 @@
 #define ColNum "\x1b[33m"
 //#define reset_curs printf("")
 
+#define CUSTOM 0
+#define EASY 1
+#define NORMAL 2
+#define HARD 3
+#define VERY_HARD 4
+#define IMPOSSIBLE 5
 
 
-enum Difficulty {
+
+/*enum Difficulty {
     CUSTOM = 0,
     EASY = 1,
     NORMAL = 2,
     HARD = 3,
     VERY_HARD = 4,
     IMPOSSIBLE = 5,
-};
+};*/
 
 float thcust(){
   float th = 0;
@@ -154,7 +161,7 @@ void open_cell(/*struct BombCoords** bc, struct OpenCells** oc*/char **START_GAM
 
 
 
-char* cellCheck(/*struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* oc*/char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int xi, int yj)
+char* cellCheck(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int xi, int yj)
 {
   /*struct OpenCells* current_c = oc;
   struct FlagCoords* current_f = fc;
@@ -218,10 +225,25 @@ char* cellCheck(/*struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells
 
 }
 
+/*int choseDifficulty()
+{
+  int diff = 9; //НЕ МЕНЯТЬ БЛЯЬ\ТЬ!!!!!!!!!!!!!1
+  //int diff = 0;
+  //while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
+  while (diff != 0 && diff != 1 && diff != 2 && diff != 3 && diff != 4 && diff != 5)
+  {
+    system("clear");
+    printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)\n> ");
+  printf("ok");
+    scanf("%d", &diff);
+  }
+  return diff;
+}*/
+
+
 int choseDifficulty()
 {
-  //int diff = 9;
-  int diff = 0;
+  int diff = 9;
   while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
   {
     system("clear");
@@ -231,7 +253,7 @@ int choseDifficulty()
   return diff;
 }
 
-void drowField(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
+void drowField(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int row, int col, int corx, int cory, int diff, int *x, int *y)
 {
   printf("\033[0;0H");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
@@ -262,7 +284,7 @@ void drowField(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, in
     printf("║ ");
     for(int i = 0; i < row; i++)
     {
-      char* sum = cellCheck(, *fc, oc, i, j);
+      char* sum = cellCheck(START_GAME_FIELD,WORK_FIELD, FLAG_FIELD, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf(ColCors "X " Reset);}
       else{printf("%s ", sum);}
@@ -280,7 +302,7 @@ void drowField(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, in
   for (int j = 0; j < row; j++){printf("══");}
   printf("╝\n");
   fflush(stdout); // очищаем буфер вывода после каждой операции вывода
-  printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
+  //printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
   printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
 }
 
