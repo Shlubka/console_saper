@@ -7,7 +7,7 @@
 #include <sys/ioctl.h>
 #include "libs/term_tools.h"
 #include "libs/decorations.c"
-#include "libs/gamefn.h"
+//#include "libs/gamefn.h"
 
 int main(void)
 {
@@ -16,10 +16,10 @@ int main(void)
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
-  welcome(&y, &x);
+  welcome(&width, &height);
   printf("Enter the field dimensions (format: 30x30) > ");
   scanf("%dx%d", &row ,&col);
-  if (row > height || col > width) 
+  /*if (row > height || col > width) 
   {
     if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) > ", width / 4, height / 2) == 0) 
     {
@@ -33,9 +33,9 @@ int main(void)
         row = 30;
         col = 30;
     }
-  }
+  }*/
 
-  diff = choseDifficulty();
+  //diff = choseDifficulty();
 
   //allocation memmory to fields
   char **START_GAME_FIELD = (char **)malloc(x * sizeof(char *));
@@ -50,14 +50,14 @@ int main(void)
   }
   //allocation memmory to fields
 
-  genCode(START_GAME_FIELD, diff, row, col);
+  //genCode(START_GAME_FIELD, diff, row, col);
 
   enableRawMode();
   system("clear");
   while(1)
   {
     indent(&width, &height, &x, &y, col, row);
-    drowField(&bombCoords, &flagCoords, opencells, row, col, corx, cory, diff, num, &x, &y);
+    //drowField(&bombCoords, &flagCoords, opencells, row, col, corx, cory, diff, num, &x, &y);
     scanf("\n%c", &move);
 
     switch(move)
@@ -85,7 +85,7 @@ int main(void)
     case 'q':
         system("clear");
         disableRawMode();
-        dor = doureal();
+        //dor = doureal();
         if (dor == 2)
         {
           //printf("%d\n", dor);
@@ -98,7 +98,7 @@ int main(void)
           break;
         }
     case 'f':
-        addFlag(&flagCoords, corx, cory);
+        //addFlag(&flagCoords, corx, cory);
         break;
     case '`':
         //printf("pisun");
@@ -112,7 +112,7 @@ int main(void)
       system("killall mpv;clear");
       break;
     default:
-        open_cell(&bombCoords, &opencells, corx, cory, col, row);
+        //open_cell(&bombCoords, &opencells, corx, cory, col, row);
         //openCell(opencells, bombCoords, cory, corx);
         //system("clear");
         //printf("Incorect input\n");

@@ -1,52 +1,43 @@
 #include <bits/pthread_types.h>
 #include <pthread.h>
 #include <time.h>
-#define MUSIC "music/1.mp3"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 
-#include <stdio.h>
-#include <unistd.h>
-
-
-
-
 void *music_welcome(void *arg) {
-    char* argv[] = {"mpv", "--loop=inf", "--quiet", "--no-video", "--no-terminal", "music/1.mp3", NULL};
-    char* envp[] = {NULL};
+    char* command = "mpv --loop=inf --quiet --no-video --no-terminal 1.mp3";
 
-    register char** arg_ptr asm("x0") = argv;
-    register char** env_ptr asm("x1") = envp;
-    register int fd asm("x2") = 0;
+    register long x0 asm("x0") = (long)command;
 
     asm volatile (
-        "mov x8, #0\n"
-        "svc #0\n"
+        "bl system\n"
         :
-        : "r" (arg_ptr), "r" (env_ptr), "r" (fd)
-        : "x8", "memory", "cc"
+        : "r" (x0)
+        : "memory", "cc"
     );
+  //system("./asm");
 
-    // Если execve вернул управление, значит произошла ошибка
-    perror("execve");
     return NULL;
 }
 
 void *welcome_print(void *arg)
 {
-  sleep(1);
+  //sleep(1);
   int *params = (int*) arg;
   int width = params[0];
   int height = params[1];
   system("clear");
   printf("\x1b[32m" );
 
+  //printf("%d, %d", width, height);
+  //sleep(5);
 
-    for (int i = 0; i < width/2; i++){printf("\n");}
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    //for (int i = 0; i < height/4; i++){printf("\n");}
+    printf("\033[%dB", height/2);
+    for (int i = 0; i < width/3; i++){printf(" ");}
 
   if (height <= 50)
   {

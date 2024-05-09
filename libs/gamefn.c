@@ -33,70 +33,75 @@ float thcust(){
 }
 
 
-void create_new_open_cell(char **START_GAME_FIELD, int x, int y) {
+void create_new_open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int x, int y) {
 
     int f_num = 0;
     int tempx, tempy;
 
-    for (int i = -1; i <= 1; i++){
+    for (int i = -1; i <= 1; i++)
+    {
         tempx = x + i;
-        for (int j = -1; j <= 1; j++){
+        for (int j = -1; j <= 1; j++)
+        {
             tempy = y + j;
-
-            while (current_b != NULL) {
-                if (current_b->x == tempx && current_b->y == tempy) {
-                    f_num += 1;
-                }
-                current_b = current_b->next;
+            if (START_GAME_FIELD[tempy][tempy] == 1)
+            {
+              f_num += 1;
             }
-            current_b = *bc; // сброс текущей бомбы в начало списка перед проверкой новой клетки
         }
     }
 
 
 
-    new_cell->x = x;
-    new_cell->y = y;
     switch (f_num) {
       case 1:
-        new_cell->cell = ColNum"1"Reset;
+        WORK_FIELD[x][y] = '1';
         break;
       case 2:
-        new_cell->cell = ColNum"2"Reset;
+        WORK_FIELD[x][y] = '2';
+        //new_cell->cell = ColNum"2"Reset;
         break;
       case 3:
-        new_cell->cell = ColNum"3"Reset;
+        WORK_FIELD[x][y] = '3';
+        //new_cell->cell = ColNum"3"Reset;
         break;
       case 4:
-        new_cell->cell = ColNum"4"Reset;
+        WORK_FIELD[x][y] = '4';
+        //new_cell->cell = ColNum"4"Reset;
         break;
       case 5:
-        new_cell->cell = ColNum"5"Reset;
+        WORK_FIELD[x][y] = '5';
+        //new_cell->cell = ColNum"5"Reset;
         break;
       case 6:
-        new_cell->cell = ColNum"6"Reset;
+        WORK_FIELD[x][y] = '6';
+        //new_cell->cell = ColNum"6"Reset;
         break;
       case 7:
-        new_cell->cell = ColNum"7"Reset;
+        WORK_FIELD[x][y] = '7';
+        //new_cell->cell = ColNum"7"Reset;
         break;
       case 8:
-        new_cell->cell = ColNum"8"Reset;
+        WORK_FIELD[x][y] = '8';
+        //new_cell->cell = ColNum"8"Reset;
         break;
       case 0:
-        new_cell->cell = "#";
+        WORK_FIELD[x][y] = '#';
+        //new_cell->cell = "#";
         break;
       default:
-        new_cell->cell = "*";
+        WORK_FIELD[x][y] = '*';
+        //new_cell->cell = "*";
         break;
     } 
-    new_cell->next = *oc;
-    *oc = new_cell;
+    //new_cell->next = *oc;
+    //*oc = new_cell;
 }
 
 
-void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx, int col, int row) {
+void open_cell(/*struct BombCoords** bc, struct OpenCells** oc*/char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, int col, int row) {
   int tempx, tempy;
-  struct BombCoords* current_b = *bc;
+  //struct BombCoords* current_b = *bc;
   int found = 0; // Флаг для указания на наличие элемента
 
   for (int j = 0; j < col; j++) {
@@ -104,87 +109,119 @@ void open_cell(struct BombCoords** bc, struct OpenCells** oc, int cory, int corx
     for (int i = 0; i < row; i++) {
       tempx = corx + i;
 
-        while (current_b != NULL) {
-          if (current_b->x == tempx && current_b->y == tempy) {
+        //while (current_b != NULL) {
+          //if (current_b->x == tempx && current_b->y == tempy) {
+          if (START_GAME_FIELD[tempx][tempy] == 1)
+          {
             found = 1;
             break; // Нашли элемент, прерываем цикл
           }
-          current_b = current_b->next;
+          //current_b = current_b->next;
         }
 
         if (found) {
           break; // Прерываем внешний цикл
         }
 
-        create_new_open_cell(bc, oc, tempx, tempy);
-        current_b = *bc; // Возвращаем указатель обратно в начало списка
+        //create_new_open_cell(bc, oc, tempx, tempy);
+        //current_b = *bc; // Возвращаем указатель обратно в начало списка
     }
-  }
+  //}
 
    for (int j = 0; tempy > 0; j++) {
     tempy = cory - j;
     for (int i = 0; tempx > 0; i++) {
       tempx = corx + i;
 
-        while (current_b != NULL) {
-          if (current_b->x == tempx && current_b->y == tempy) {
+        //while (current_b != NULL) {
+          //if (current_b->x == tempx && current_b->y == tempy) {
+          if (START_GAME_FIELD[tempx][tempy] == 1)
+          {
             found = 1;
             break; // Нашли элемент, прерываем цикл
           }
-          current_b = current_b->next;
+          //current_b = current_b->next;
         }
 
         if (found) {
           break; // Прерываем внешний цикл
         }
 
-        create_new_open_cell(bc, oc, tempx, tempy);
-        current_b = *bc; // Возвращаем указатель обратно в начало списка
+        //create_new_open_cell(bc, oc, tempx, tempy);
+        //current_b = *bc; // Возвращаем указатель обратно в начало списка
     }
-  }
 }
 
 
 
-
-
-
-
-char* cellCheck(struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* oc, int xi, int yj)
+char* cellCheck(/*struct BombCoords* bc, struct FlagCoords* fc, struct OpenCells* oc*/char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int xi, int yj)
 {
-  struct OpenCells* current_c = oc;
+  /*struct OpenCells* current_c = oc;
   struct FlagCoords* current_f = fc;
-  struct BombCoords* current_b = bc;
-  while (current_b != NULL) //прохлжу по структуре с бомбами
+  struct BombCoords* current_b = bc;*/
+
+  //##########################################
+  /*while (current_b != NULL) //прохожу по структуре с бомбами
   {
     if (current_b->x == xi && current_b->y == yj)
     {
       return ColRed"@"Reset;
     }
     current_b = current_b -> next;
+  }*/
+  //##########################################
+
+  //for (int i = 0;;){}
+  if (START_GAME_FIELD[xi][yj] == 1)
+  {
+    return ColRed"@"Reset;
   }
-  while (current_c != NULL) //прохожу по структуре с открытыми слетками
+
+  //##########################################
+  /*while (current_c != NULL) //прохожу по структуре с открытыми слетками
   {
     if (current_c->x == xi && current_c->y == yj)
     {
       return current_c->cell;
     }
     current_c = current_c -> next;
+  }*/
+  //##########################################
+
+  //for (int i = 0;;){}
+  if (WORK_FIELD[xi][yj] == 1)
+  {
+    //char* near_bombs = WORK_FIELD[xi][yj];
+    //return ColRed""Reset;
+    return &WORK_FIELD[xi][yj];
   }
-  while (current_f != NULL) //прохожу по структуре с флагами
+
+  //##########################################
+  /*while (current_f != NULL) //прохожу по структуре с флагами
   {
     if (current_f->x == xi && current_f->y == yj)
     {
       return "F";
     }
     current_f = current_f->next;
+  }*/
+  //##########################################
+  //
+  if (FLAG_FIELD[xi][yj] == 1)
+  {
+    return "F";
   }
+
   return "?";
+
+  for (int i = 0;;){}
+
 }
 
 int choseDifficulty()
 {
-  int diff = 9;
+  //int diff = 9;
+  int diff = 0;
   while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
   {
     system("clear");
@@ -194,7 +231,7 @@ int choseDifficulty()
   return diff;
 }
 
-void drowField(char **START_GAME_FIELD, char **WORK_FIELD, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
+void drowField(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int row, int col, int corx, int cory, int diff, int num, int *x, int *y)
 {
   printf("\033[0;0H");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
@@ -225,7 +262,7 @@ void drowField(char **START_GAME_FIELD, char **WORK_FIELD, int row, int col, int
     printf("║ ");
     for(int i = 0; i < row; i++)
     {
-      char* sum = cellCheck(*bc, *fc, oc, i, j);
+      char* sum = cellCheck(, *fc, oc, i, j);
       //if координата открыта и рядом нет бомб, то нарисовать ·
       if(i == cory && j == corx){printf(ColCors "X " Reset);}
       else{printf("%s ", sum);}
@@ -247,13 +284,13 @@ void drowField(char **START_GAME_FIELD, char **WORK_FIELD, int row, int col, int
   printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
 }
 
-void addFlag(struct FlagCoords** fc, int cory, int corx)
+void addFlag(char **FLAG_FIELD, int cory, int corx)
 {
-  struct FlagCoords* current_flag = *fc;
-  struct FlagCoords* prev_flag = NULL;
+  //struct FlagCoords* current_flag = *fc;
+  //struct FlagCoords* prev_flag = NULL;
 
   //проверка, есть ли элемент в структуре, если есть, то удалить
-  while (current_flag != NULL)
+  /*while (current_flag != NULL)
   {
     if (current_flag->x == corx && current_flag->y == cory)
     {
@@ -279,7 +316,13 @@ void addFlag(struct FlagCoords** fc, int cory, int corx)
   new_flag->x = corx;
   new_flag->y = cory;
   new_flag->next = *fc;
-  *fc = new_flag;
+  *fc = new_flag;*/
+  if (FLAG_FIELD[corx][cory] == 0)
+  {
+    FLAG_FIELD[corx][cory] = '1';
+  }
+  else FLAG_FIELD[corx][cory] = '0';
+
 }
 
 void genCode(char **START_GAME_FIELD, int diff, int row, int col) {
@@ -320,9 +363,14 @@ void genCode(char **START_GAME_FIELD, int diff, int row, int col) {
         int x = rand() % row;
         int y = rand() % col;
 
-        if (START_GAME_FIELD[x][y] == i){i -=; continue;}
+        if (START_GAME_FIELD[x][y] == i)
+        {
+          i = i -1;
+          continue;
+        }
         else {START_GAME_FIELD[x][y] = i;}
 
+}
 }
 
 
