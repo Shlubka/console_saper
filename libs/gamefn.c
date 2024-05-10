@@ -212,18 +212,18 @@ int choseDifficulty()
   return diff;
 }
 
-//void drowField(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int row, int col, int corx, int cory, int diff, int *x, int *y)
-//{
-//  printf("\033[0;0H");
-//  printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
-//  printf("Your difficult: ");
-//  if (diff == 1){printf("easy\n");}
-//  else if (diff == 2){printf("normal\n");}
-//  else if (diff == 3){printf("hard\n");}
-//  /else if (diff == 4){printf("very hard\n");}
-  //else if (diff == 5){printf("IMPOSSIBLE\n");}
-//  else if (diff == 0){printf("custom\n");}
-  /*for (int n = 0; n < *y; n++)
+/*void drowField(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int row, int col, int corx, int cory, int diff, int *x, int *y)
+{
+  printf("\033[0;0H");
+  printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
+  printf("Your difficult: ");
+  if (diff == 1){printf("easy\n");}
+  else if (diff == 2){printf("normal\n");}
+  else if (diff == 3){printf("hard\n");}
+  else if (diff == 4){printf("very hard\n");}
+  else if (diff == 5){printf("IMPOSSIBLE\n");}
+  else if (diff == 0){printf("custom\n");}
+  for (int n = 0; n < *y; n++)
   {
     printf("\n");
   }
@@ -240,6 +240,7 @@ int choseDifficulty()
     {
       printf(" ");
     }
+   //printf("drow");
     printf("║ ");
     for(int i = 0; i < row; i++)
     {
@@ -260,10 +261,10 @@ int choseDifficulty()
   printf("╚═");
   for (int j = 0; j < row; j++){printf("══");}
   printf("╝\n");
-  fflush(stdout); // очищаем буфер вывода после каждой операции вывода**/
+  fflush(stdout); // очищаем буфер вывода после каждой операции вывода
   //printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
-  //printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
-//}
+  printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
+}*/
 
 void addFlag(char **FLAG_FIELD, int cory, int corx)
 {
@@ -306,9 +307,11 @@ void addFlag(char **FLAG_FIELD, int cory, int corx)
 
 }
 
-void genCode(char **START_GAME_FIELD, int diff, int row, int col) {
-    /*row = row -1;
-    col = col -1;*/
+int genCode(char **START_GAME_FIELD, int diff, int row, int col) {
+    if (START_GAME_FIELD == NULL) {
+        return -1; // Return an error code
+    }
+
     int totalCells = row * col;
     int numBombs = 0;
     double threshold = 0.0;
@@ -335,24 +338,21 @@ void genCode(char **START_GAME_FIELD, int diff, int row, int col) {
     }
 
     numBombs = totalCells * threshold;
-    numBombs = numBombs;
-    //переделать в while
-    int x = rand() % row;
-    int y = rand() % col;
-    int i = 0;
-    for (int i = 0; i < numBombs; i++) {
+
+    for (int i = 0; i < numBombs; ) {
         int x = rand() % row;
         int y = rand() % col;
 
-        if (START_GAME_FIELD[x][y] == i)
-        {
-          i = i -1;
-          continue;
+        if (START_GAME_FIELD[x][y] != '*') {
+            START_GAME_FIELD[x][y] = '*';
+            i++;
         }
-        else {START_GAME_FIELD[x][y] = i;}
+    }
 
+    return numBombs;
 }
-}
+
+
 
 
 int doureal ()

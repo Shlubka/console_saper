@@ -1,4 +1,4 @@
-#include <bits/pthread_types.h>
+//#include <bits/pthread_types.h>
 #include <pthread.h>
 #include <time.h>
 
@@ -8,7 +8,7 @@
 
 
 void *music_welcome(void *arg) {
-    char* command = "mpv --loop=inf --quiet --no-video --no-terminal 1.mp3";
+    /*char* command = "mpv --loop=inf --quiet --no-video --no-terminal 1.mp3";
 
     register long x0 asm("x0") = (long)command;
 
@@ -17,7 +17,7 @@ void *music_welcome(void *arg) {
         :
         : "r" (x0)
         : "memory", "cc"
-    );
+    );*/
   //system("./asm");
 
     return NULL;

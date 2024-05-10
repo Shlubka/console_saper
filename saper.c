@@ -10,9 +10,103 @@
 #include "libs/gamefn.h"
 
 
-void dryFd()
+void dryFd(int *y, int *x, int row, int col, int corx, int cory, int diff)
 {
-  printf("enter funck");
+  /*int diff = 0;
+  //printf("enter funck");
+  printf("\033[0;0H");
+  printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
+  printf("Your difficult: ");
+  if (diff == 1){printf("easy\n");}
+  else if (diff == 2){printf("normal\n");}
+  else if (diff == 3){printf("hard\n");}
+  else if (diff == 4){printf("very hard\n");}
+  else if (diff == 5){printf("IMPOSSIBLE\n");}
+  else if (diff == 0){printf("custom\n");}
+
+  for (int n = 0;n < *y; n++){printf("\n");}
+  for (int n = 0;n < *x; n++){printf(" ");}
+  printf("╔═");
+  for(int i = 0; i < row; i++){printf("══");}
+  printf("╗\n");
+
+
+  for (int j = 0; j < col; j++){
+    for (int i = 0; i < *x; i++){
+      printf(" ");
+    }
+    printf("║ ");
+
+    for (int k = 0; k < row; k++)
+    {
+      if(i == cory && j == corx){printf(ColCors "X " Reset);}
+      //else{printf("%s ", sum);}
+      printf("  ");
+    }
+
+    printf("║\n");
+  }
+
+
+  for (int n = 0; n < *x; n++)
+  {
+    printf(" ");
+  }
+  printf("╚═");
+  for (int j = 0; j < row; j++){printf("══");}
+  printf("╝\n");*/
+
+  printf("\033[0;0H");
+  printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
+  printf("Your difficult: ");
+  if (diff == 1){printf("easy\n");}
+  else if (diff == 2){printf("normal\n");}
+  else if (diff == 3){printf("hard\n");}
+  else if (diff == 4){printf("very hard\n");}
+  else if (diff == 5){printf("IMPOSSIBLE\n");}
+  else if (diff == 0){printf("custom\n");}
+  for (int n = 0; n < *y; n++)
+  {
+    printf("\n");
+  }
+  for (int n = 0; n < *x; n++)
+  {
+    printf(" ");
+  }
+  printf("╔═");
+  for(int i = 0; i < row; i++){printf("══");}
+  printf("╗\n");
+  for(int j = 0; j < col; j++)
+  {
+    for (int n = 0; n < *x; n++)
+    {
+      printf(" ");
+    }
+   //printf("drow");
+    printf("║ ");
+    for(int i = 0; i < row; i++)
+    {
+      //char* sum = cellCheck(START_GAME_FIELD,WORK_FIELD, FLAG_FIELD, i, j);
+      //if координата открыта и рядом нет бомб, то нарисовать ·
+      if(i == cory && j == corx){printf(ColCors "X " Reset);}
+      else{printf("  ");}
+      fflush(stdout); // очищаем буфер вывода после каждой операции вывода
+    }
+
+    printf("║\n");
+    fflush(stdout); // очищаем буфер вывода после каждой операции вывода
+  }
+  for (int n = 0; n < *x; n++)
+  {
+    printf(" ");
+  }
+  printf("╚═");
+  for (int j = 0; j < row; j++){printf("══");}
+  printf("╝\n");
+  fflush(stdout); // очищаем буфер вывода после каждой операции вывода
+  //printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
+  printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
+
 }
 
 
@@ -42,7 +136,7 @@ int main(void)
     }
   }
 
-  //diff = choseDifficulty();
+  diff = choseDifficulty();
 
   //allocation memmory to fields
   char **START_GAME_FIELD = (char **)malloc(x * sizeof(char *));
@@ -62,18 +156,19 @@ int main(void)
   }
   //allocation memmory to fields
 
-  //genCode(START_GAME_FIELD, diff, row, col);
+  diff = genCode(START_GAME_FIELD, diff, row, col); //ok
 
-  //enableRawMode();
+  enableRawMode();
   system("clear");
-  printf("ok");
+  //printf("ok");
   //sleep(1); //этого нельзя
   while(1)
   {
-    dryFd();
-    /*printf("ok");;
+    //dryFd();
+    //printf("ok");;
     indent(&width, &height, &x, &y, col, row);
-    dryFd();
+    //drowField(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, row, col, corx, cory, diff, &x, &y);
+    dryFd(&y, &x, row, col, corx, cory, diff);
     scanf("\n%c", &move);
 
     switch(move)
@@ -105,7 +200,8 @@ int main(void)
         if (dor == 2)
         {
           printf("%d\n", dor);
-          system("killall mpv");
+          system("killall mpv; clear");
+          printf("spasiba za igru!!\n");
           return 0;
         }
         else if (dor == 1)
@@ -118,7 +214,7 @@ int main(void)
         break;
     case '`':
         printf("pisun");
-        sleep(2);
+        //sleep(2);
         //cli_command();
         break;
     case '1':
@@ -134,7 +230,7 @@ int main(void)
         //printf("Incorect input\n");
         //sleep(1);
         break;
-  }*/
+  }
 }
   system("killall mpv");
 }
