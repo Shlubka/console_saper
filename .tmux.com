@@ -1,2 +1,0 @@
-set-option -g prefix C-q
-set -g mouse on
