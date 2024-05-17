@@ -1,6 +1,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+//#include <string.h>
 
 void enableRawMode()
 {
@@ -32,4 +33,19 @@ void indent(int *width, int *height, int *x, int *y, int col, int row)
    *x = (*width - (row * 2) - 3)/2;
    *y = (*height - col - 5)/2;
 }
+
+
+/*nt cli(int *fdb)
+{
+  //char msg; // increased the size to hold a meaningful string
+  while (1) {
+    printf("\n{cli} Enter command > ");
+    scanf("%c", msg); // %255s to prevent buffer overflow
+    if (msg, 'd' == 0) { // compare the input with "db"
+      *fdb = 1;
+    }
+  }
+  //free(&msg);
+  return 0;
+}*/
 

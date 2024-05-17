@@ -3,88 +3,32 @@
 #include <time.h>
 #include <termios.h>
 #include <unistd.h>
-#include <string.h>
 #include <sys/ioctl.h>
 #include "libs/term_tools.h"
 #include "libs/decorations.c"
 #include "libs/gamefn.h"
 
-char* cellcheck(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int xi, int yi)
-{
-  {
-    return "@";
-  }
-  return "*";
-}
-
-void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff)
-{
-  printf("\033[0;0H");
-  printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
-  printf("Your difficult: ");
-  if (diff == 1){printf("easy\n");}
-  else if (diff == 2){printf("normal\n");}
-  else if (diff == 3){printf("hard\n");}
-  else if (diff == 4){printf("very hard\n");}
-  else if (diff == 5){printf("IMPOSSIBLE\n");}
-  else if (diff == 0){printf("custom\n");}
-  for (int n = 0; n < *y; n++)
-  {
-    printf("\n");
-  }
-  for (int n = 0; n < *x; n++)
-  {
-    printf(" ");
-  }
-  printf("╔═");
-  for(int i = 0; i < row; i++){printf("══");}
-  printf("╗\n");
-  for(int j = 0; j < col; j++)
-  {
-    for (int n = 0; n < *x; n++)
-    {
-      printf(" ");
-    }
-   //printf("drow");
-    printf("║ ");
-    for(int i = 0; i < row; i++)
-    {
-      if(i == cory && j == corx){printf(ColCors "X " Reset);}
-      else if (START_GAME_FIELD[j][i] == '*'){printf("@ ");} //почему сдесь ошибка?
-//else if (FLAG_FIELD[i][j] == '1'){printf("F ");}
-      //char* sum = cellcheck(START_GAME_FIELD,WORK_FIELD, FLAG_FIELD, i, j);
-      else{printf("  ");}
-      fflush(stdout); // очищаем буфер вывода после каждой операции вывода
-    }
-
-    printf("║\n");
-    fflush(stdout); // очищаем буфер вывода после каждой операции вывода
-  }
-  for (int n = 0; n < *x; n++)
-  {
-    printf(" ");
-  }
-  printf("╚═");
-  for (int j = 0; j < row; j++){printf("══");}
-  printf("╝\n");
-  fflush(stdout); // очищаем буфер вывода после каждой операции вывода
-  //printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
-  printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
-
-}
+// обозначение светов
+#define Reset "\x1b[0m"//белый
+#define ColRed "\x1b[31m"
+#define ColCors "\x1b[32m"
+#define ColNum "\x1b[33m"
+//#define reset_curs printf("")
 
 
-int main(void)
+void genbombs(){}
+
+int main()
 {
   srand(time(NULL));
-  int row, col, corx = 0, cory = 0, diff, x, y, width, height, dor;
+  int row, col, corx = 0, cory = 0, diff, x, y, width, height, dor, fdb;
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
-  welcome(&width, &height);
+  //welcome(&width, &height);
   printf("Enter the field dimensions (format: 30x30) > ");
   scanf("%dx%d", &row ,&col);
-  if (row > height || col > width) 
+  if (row > height || col > width)
   {
     if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) > ", width / 4, height / 2) == 0) 
     {
@@ -118,9 +62,25 @@ int main(void)
   {
     FLAG_FIELD[i] = (char *)malloc(y * sizeof(char));
   }
+
+  for (int i = 0; i < x; i++)
+  {
+    for (int j = 0; j < y; j++)
+    {
+      START_GAME_FIELD[i][j] = 9;
+      WORK_FIELD[i][j] = 9;
+      FLAG_FIELD[i][j] = 9;
+    }
+  }
+
+  //нужно заполнить массив, посмотреть, что будет
+  //пока предположу, что система чистит выделенное местo
   //allocation memmory to fields
 
-  diff = genCode(START_GAME_FIELD, diff, row, col); //ok
+  //diff = genCode(START_GAME_FIELD, diff, row, col);
+  //genCode(START_GAME_FIELD, diff, col, row);
+  genCode(START_GAME_FIELD, diff, row, col);
+  printf("ok");
 
   //#############################################
   for (int i = 0; i < row; i++)
@@ -132,16 +92,16 @@ int main(void)
   }
 
 
-  for (int i = 0; i < row; i++)
+  /*for (int i = 0; i < row; i++)
   {
     for (int j = 0; j < col; j++)
     {
       printf("%c ", FLAG_FIELD[i][j]);
     }
-  }
+  }*/
 
   //#############################################
-
+  //system("clear");
   enableRawMode();
   system("clear");
   //printf("ok");
@@ -196,11 +156,10 @@ int main(void)
     case 'f':
         addFlag(FLAG_FIELD, corx, cory);
         break;
-    case '`':
-        printf("pisun");
+    //case '`':
+        //printf("\npisun\n");
         //sleep(2);
-        //cli_command();
-        break;
+        //break;
     case '1':
       system("mpv --loop=inf --quiet --no-video --no-terminal libs/1.mp3");
       break;
@@ -208,16 +167,10 @@ int main(void)
       system("killall mpv;clear");
       break;
     default:
-        //open_cell(&bombCoords, &opencells, corx, cory, col, row);
-        //openCell(opencells, bombCoords, cory, corx);
-        //system("clear");
-        //printf("Incorect input\n");
-        //sleep(1);
+        open_cell(START_GAME_FIELD, WORK_FIELD, cory, corx, col, row);
         break;
   }
 }
   system("killall mpv");
 }
-
-
 

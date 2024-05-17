@@ -91,7 +91,7 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
   int tempx, tempy;
   int found = 0; // Флаг для указания на наличие элемента
 
-  for (int j = 0; j < col; j++) {
+  /*for (int j = 0; j < col; j++) {
     tempy = cory + j;
     for (int i = 0; i < row; i++) {
       tempx = corx + i;
@@ -122,7 +122,9 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
         if (found) {
           break; // Прерываем внешний цикл
         }
-    }
+    }*/
+  if (START_GAME_FIELD[corx][cory] == '*'){printf("loooooooseeeer"); sleep(5);}
+  WORK_FIELD[corx][cory] = 1;
 }
 
 
@@ -141,19 +143,16 @@ int choseDifficulty()
 
 void addFlag(char **FLAG_FIELD, int cory, int corx)
 {
-  if (FLAG_FIELD[corx][cory] == 0)
+  if (FLAG_FIELD[corx][cory] != '1')
   {
     FLAG_FIELD[corx][cory] = '1';
   }
   else FLAG_FIELD[corx][cory] = '0';
-
 }
 
-int genCode(char **START_GAME_FIELD, int diff, int row, int col) {
-    if (START_GAME_FIELD == NULL) {
-        return -1; // Return an error code
-    }
-
+void genCode(char **START_GAME_FIELD, int diff, int row, int col) {
+    printf("ok\n");
+    //sleep(1);
     int totalCells = row * col;
     int numBombs = 0;
     double threshold = 0.0;
@@ -179,22 +178,39 @@ int genCode(char **START_GAME_FIELD, int diff, int row, int col) {
             break;
     }
 
+    int tex = row - 1;
+    int tey = col - 1;
+    printf("ok2\n");
+    //sleep(1);
     numBombs = totalCells * threshold;
+    //printf("%d", numBombs);
+    //sleep(1);
 
+    printf("ok3\n");
+    //sleep(1);
     for (int i = 0; i < numBombs; ) {
-        int x = rand() % row;
-        int y = rand() % col;
+        //int x = rand() % tex;
+        //int y = rand() % tey;
+        int x = (rand() % row);
+        //if (x<1){x = 1;}
+        int y = (rand() % col);
+        //if (y<1){y = 1;}
+        //int x = rand();
+        //int y = rand();
+        printf("\n%d %d\n", x, y);
 
         if (START_GAME_FIELD[x][y] != '*') {
             START_GAME_FIELD[x][y] = '*';
             i++;
         }
+        printf("ok%d\n", i);
     }
+    sleep(1);
 
-    return numBombs;
+    //return numBombs;
 }
 
-
+//void Bombs_gen(char **START_GAME_FIELD, int diff, int row, )
 
 
 int doureal ()
@@ -236,3 +252,60 @@ int confirmInput(int width, int height, const char* message, int defaultWidth, i
 }
 
 
+
+void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff)
+{
+  printf("\033[0;0H");
+  printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
+  printf("Your difficult: ");
+  if (diff == 1){printf("easy\n");}
+  else if (diff == 2){printf("normal\n");}
+  else if (diff == 3){printf("hard\n");}
+  else if (diff == 4){printf("very hard\n");}
+  else if (diff == 5){printf("IMPOSSIBLE\n");}
+  else if (diff == 0){printf("custom\n");}
+  for (int n = 0; n < *y; n++)
+  {
+    printf("\n");
+  }
+  for (int n = 0; n < *x; n++)
+  {
+    printf(" ");
+  }
+  printf("╔═");
+  for(int i = 0; i < row; i++){printf("══");}
+  printf("╗\n");
+  for(int j = 0; j < col; j++)
+  {
+    for (int n = 0; n < *x; n++)
+    {
+      printf(" ");
+    }
+   //printf("drow");
+    printf("║ ");
+    for(int i = 0; i < row; i++)
+    {
+      if(i == cory && j == corx){printf(ColCors "X " Reset);}
+      else if (START_GAME_FIELD[j][i] == '*'){printf(ColRed"@ "Reset);} //почему сдесь ошибка?
+      else if (WORK_FIELD[j][i] == 1){printf("1 ");}
+      else if (FLAG_FIELD[i][j] == '1'){printf("F ");}
+      //char* sum = cellcheck(START_GAME_FIELD,WORK_FIELD, FLAG_FIELD, i, j);
+      else{printf("# ");}
+      fflush(stdout); // очищаем буфер вывода после каждой операции вывода
+    }
+
+    printf("║\n");
+    fflush(stdout); // очищаем буфер вывода после каждой операции вывода
+  }
+  for (int n = 0; n < *x; n++)
+  {
+    printf(" ");
+  }
+  printf("╚═");
+  for (int j = 0; j < row; j++){printf("══");}
+  printf("╝\n");
+  fflush(stdout); // очищаем буфер вывода после каждой операции вывода
+  //printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
+  printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
+
+}
