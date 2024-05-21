@@ -15,13 +15,62 @@
 #define ColNum "\x1b[33m"
 //#define reset_curs printf("")
 
+void genCode(char **START_GAME_FIELD, int diff, int row, int col)
+{
+  int totalCells = row * col;
+  int numBombs = 0;
+  double threshold = 0.0;
 
-void genbombs(){}
+  switch (diff) {
+    case CUSTOM:
+      threshold = thcust();
+      break;
+    case EASY:
+      threshold = 0.1;
+      break;
+    case NORMAL:
+      threshold = 0.3;
+      break;
+    case HARD:
+      threshold = 0.5;
+      break;
+    case VERY_HARD:
+      threshold = 0.7;
+      break;
+    case IMPOSSIBLE:
+      threshold = 0.9;
+      break;
+  }
+
+  //int tex = row - 1;
+  //int tey = col - 1;
+  numBombs = totalCells * threshold;
+
+  for (int i = 0; i < numBombs; )
+  {
+    int x = (rand() % row);
+    int y = (rand() % col);
+    printf("%d, %d", x, y);
+    if (x < 0 || x >= col || y < 0 || y >= row)
+    {
+      continue;
+    }
+    else
+    {
+      if (START_GAME_FIELD[y][x] != '*')
+      {
+        START_GAME_FIELD[y][x] = '*';
+        i++;
+      }
+    }
+  }
+}
+
 
 int main()
 {
   srand(time(NULL));
-  int row, col, corx = 0, cory = 0, diff, x, y, width, height, dor, fdb;
+  int row, col, corx = 0, cory = 0, diff, x = 0, y = 0, width, height, dor, dbf = 0;
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
@@ -30,14 +79,14 @@ int main()
   scanf("%dx%d", &row ,&col);
   if (row > height || col > width)
   {
-    if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) > ", width / 4, height / 2) == 0) 
+    if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) > ", width / 4, height / 2) == 0)
     {
         row = height / 4;
         col = width / 4;
     }
-  } else if (row < 30 && col < 30) 
+  } else if (row < 30 && col < 30)
   {
-    if (confirmInput(width, height, "The size of your field is less than 30x30. Are you sure? (Yes/no) > ", 30, 30) == 0) 
+    if (confirmInput(width, height, "The size of your field is less than 30x30. Are you sure? (Yes/no) > ", 30, 30) == 0)
     {
         row = 30;
         col = 30;
@@ -47,72 +96,71 @@ int main()
   diff = choseDifficulty();
 
   //allocation memmory to fields
-  char **START_GAME_FIELD = (char **)malloc(x * sizeof(char *));
-  for (int i = 0; i < x; i++)
+  char **START_GAME_FIELD = (char **)malloc(col * sizeof(char *));
+  for (int i = 0; i < col; i++)
   {
-    START_GAME_FIELD[i] = (char *)malloc(y * sizeof(char));
-  }
-  char **WORK_FIELD = (char **)malloc(x * sizeof(char *));
-  for (int i = 0; i < x; i++)
-  {
-    WORK_FIELD[i] = (char *)malloc(y * sizeof(char));
-  }
-  char **FLAG_FIELD = (char **)malloc(x * sizeof(char *));
-  for (int i = 0; i < x; i++)
-  {
-    FLAG_FIELD[i] = (char *)malloc(y * sizeof(char));
+    START_GAME_FIELD[i] = (char *)malloc(row * sizeof(char));
   }
 
-  for (int i = 0; i < x; i++)
+  for (int i = 0; i < col; i++)
   {
-    for (int j = 0; j < y; j++)
+    for (int j = 0; j < row; j++)
     {
-      START_GAME_FIELD[i][j] = 9;
-      WORK_FIELD[i][j] = 9;
-      FLAG_FIELD[i][j] = 9;
+      START_GAME_FIELD[i][j] = '9';
     }
   }
 
-  //нужно заполнить массив, посмотреть, что будет
-  //пока предположу, что система чистит выделенное местo
-  //allocation memmory to fields
+  char **WORK_FIELD = (char **)malloc(col * sizeof(char *));
+  for (int i = 0; i < col; i++)
+  {
+    WORK_FIELD[i] = (char *)malloc(row * sizeof(char));
+  }
+  char **FLAG_FIELD = (char **)malloc(row * sizeof(char *));
+  for (int i = 0; i < row; i++)
+  {
+    FLAG_FIELD[i] = (char *)malloc(col * sizeof(char));
+  }
 
-  //diff = genCode(START_GAME_FIELD, diff, row, col);
-  //genCode(START_GAME_FIELD, diff, col, row);
-  genCode(START_GAME_FIELD, diff, row, col);
-  printf("ok");
+  for (int i = 0; i < col; i++)
+  {
+    for (int j = 0; j < row; j++)
+    {
+      //START_GAME_FIELD[i][j] = 9;
+      WORK_FIELD[i][j] = 9;
+      FLAG_FIELD[j][i] = 9;
+    }
+  }
+  //allocation memmory to fields
 
   //#############################################
   for (int i = 0; i < row; i++)
   {
     for (int j = 0; j < col; j++)
     {
-      printf("%c ", START_GAME_FIELD[i][j]);
+      //printf("%c ", START_GAME_FIELD[i][j]);
+      //START_GAME_FIELD[i][j] = '1';
     }
   }
+  //#############################################
+  //genCode(START_GAME_FIELD, diff, row, col);
+  genCode(START_GAME_FIELD, diff, col, row);
 
-
-  /*for (int i = 0; i < row; i++)
+  //#############################################
+  for (int i = 0; i < row; i++)
   {
     for (int j = 0; j < col; j++)
     {
-      printf("%c ", FLAG_FIELD[i][j]);
+      //printf("%c ", START_GAME_FIELD[j][i]);
     }
-  }*/
-
+  }
   //#############################################
-  //system("clear");
   enableRawMode();
   system("clear");
-  //printf("ok");
-  //sleep(1); //этого нельзя
   while(1)
   {
-    //dryFd();
-    //printf("ok");;
     indent(&width, &height, &x, &y, col, row);
-    //drowField(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, row, col, corx, cory, diff, &x, &y);
-    dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff);
+    dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, dbf);
+    //dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, col, row, corx, cory, diff);
     scanf("\n%c", &move);
 
     switch(move)
@@ -121,7 +169,15 @@ int main()
         corx--;
         if (corx < 0){corx = col-1;}
         break;
+    case 'k':
+        corx--;
+        if (corx < 0){corx = col-1;}
+        break;
     case 's':
+        corx++;
+        if (corx > col - 1){corx= 0;}
+        break;
+    case 'j':
         corx++;
         if (corx > col - 1){corx= 0;}
         break;
@@ -129,7 +185,15 @@ int main()
         cory--;
         if (cory < 0){cory = row-1;}
         break;
+    case 'h':
+        cory--;
+        if (cory < 0){cory = row-1;}
+        break;
     case 'd':
+        cory++;
+        if (cory > row - 1){cory= 0;}
+        break;
+    case 'l':
         cory++;
         if (cory > row - 1){cory= 0;}
         break;
@@ -144,8 +208,8 @@ int main()
         if (dor == 2)
         {
           printf("%d\n", dor);
-          system("killall mpv; clear");
-          printf("spasiba za igru!!\n");
+          system("killall mpv; clear; cowsay spasiba za igru!!");
+          //printf("spasiba za igru!!\n");
           return 0;
         }
         else if (dor == 1)
@@ -156,12 +220,12 @@ int main()
     case 'f':
         addFlag(FLAG_FIELD, corx, cory);
         break;
-    //case '`':
+    case '`':
         //printf("\npisun\n");
-        //sleep(2);
-        //break;
-    case '1':
-      system("mpv --loop=inf --quiet --no-video --no-terminal libs/1.mp3");
+        clc__console__(&dbf);
+        break;
+    case '0':
+      system("mpv --loop=inf --quiet --no-video --no-terminal libs/0.mp3");
       break;
     case '2':
       system("killall mpv;clear");
