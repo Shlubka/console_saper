@@ -91,23 +91,28 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
     printf("loooooooseeeer");
     return;
   }
+  /*if (WORK_FIELD[corx][cory])
+  {
+    return;
+  }*/
 
   //int tempy = cory; tempx = corx;
   for (int q = cory; q < row; q++)
   {
   //for (int w = corx - 1; w < col; w++)
   //{
-    for (int i = -1; i < 2; i++)
-    {
       for (int j = -1; j < 2; j++)
+    {
+    for (int i = -1; i < 2; i++)
       {
-        if (corx + i < col && cory + j + q < row && corx + i >= 0 && cory + j >= 0) //&& i != 0 && j != 0)
+        if (corx + i < col &&j + q < row && corx + i >= 0 && cory + j >= 0) //&& i != 0 && j != 0)
         {
-          if (START_GAME_FIELD[corx + i][cory + j + q] == '*'){count = count + 1;}
+          if (START_GAME_FIELD[corx + i][j + q] == '*'){count = count + 1;}
+          if (START_GAME_FIELD[corx + i][j + q-1] == '*'){count = count + 1;}
         }
       }
     }
-  WORK_FIELD[corx][cory + q] = count;
+  WORK_FIELD[corx][q] = count;
   count = 0;
   }
   //}

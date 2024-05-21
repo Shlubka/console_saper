@@ -209,7 +209,7 @@ int main()
         {
           printf("%d\n", dor);
           system("killall mpv; clear; cowsay spasiba za igru!!");
-          //printf("spasiba za igru!!\n");
+          printf("\n");
           return 0;
         }
         else if (dor == 1)
