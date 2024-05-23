@@ -25,62 +25,10 @@
 float thcust()
 {
   float th = 0;
-  printf("Enter your custom persentage of bombs > ");
+  printf("Enter your custom persentage of bombs ~> ");
   scanf("%f", &th);
   th = th * 0.01;
   return th;
-}
-
-
-void create_new_open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int x, int y)
-{
-  int f_num = 0;
-  int tempx, tempy;
-
-  for (int i = -1; i <= 1; i++)
-  {
-    tempx = x + i;
-    for (int j = -1; j <= 1; j++)
-    {
-      tempy = y + j;
-      if (START_GAME_FIELD[tempy][tempy] == 1)
-      {
-        f_num += 1;
-      }
-    }
-  }
-  switch (f_num) {
-    case 1:
-      WORK_FIELD[x][y] = '1';
-      break;
-    case 2:
-      WORK_FIELD[x][y] = '2';
-      break;
-    case 3:
-      WORK_FIELD[x][y] = '3';
-      break;
-    case 4:
-      WORK_FIELD[x][y] = '4';
-      break;
-    case 5:
-      WORK_FIELD[x][y] = '5';
-      break;
-    case 6:
-      WORK_FIELD[x][y] = '6';
-      break;
-    case 7:
-      WORK_FIELD[x][y] = '7';
-      break;
-    case 8:
-      WORK_FIELD[x][y] = '8';
-      break;
-    case 0:
-      WORK_FIELD[x][y] = '#';
-      break;
-    default:
-      WORK_FIELD[x][y] = '*';
-      break;
-    }
 }
 
 
@@ -105,9 +53,10 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
     {
     for (int i = -1; i < 2; i++)
       {
-        if (corx + i < col &&j + q < row && corx + i >= 0 && cory + j >= 0) //&& i != 0 && j != 0)
+        if (START_GAME_FIELD[corx][q] == '*'){return;}
+        else if (corx + i < col &&j + q < row && corx + i >= 0 && cory + j >= 0) //&& i != 0 && j != 0)
         {
-          if (START_GAME_FIELD[corx + i][j + q] == '*'){count = count + 1;}
+          //if (START_GAME_FIELD[corx + i][j + q] == '*'){count = count + 1;}
           if (START_GAME_FIELD[corx + i][j + q-1] == '*'){count = count + 1;}
         }
       }
@@ -125,7 +74,7 @@ int choseDifficulty()
   while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
   {
     system("clear");
-    printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)\n> ");
+    printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)\n~> ");
     scanf("%d", &diff);
   }
   return diff;
@@ -141,7 +90,7 @@ void addFlag(char **FLAG_FIELD, int cory, int corx)
   else FLAG_FIELD[corx][cory] = '0';
 }
 
-/*void genCode(char **START_GAME_FIELD, int diff, int row, int col) 
+void genCode(char **START_GAME_FIELD, int diff, int row, int col)
 {
   int totalCells = row * col;
   int numBombs = 0;
@@ -168,23 +117,30 @@ void addFlag(char **FLAG_FIELD, int cory, int corx)
       break;
   }
 
-  int tex = row - 1;
-  int tey = col - 1;
-  numBombs = totalCells * threshold;
+  //int tex = row - 1;
+  //int tey = col - 1;
+  //numBombs = totalCells * threshold;
+  numBombs = totalCells * diff / 10;
 
-  for (int i = 0; i < numBombs; ) 
+  for (int i = 0; i < numBombs; )
   {
     int x = (rand() % row);
     int y = (rand() % col);
-    printf("%d, %d", x, y);
-
-    if (START_GAME_FIELD[x][y] != '*')
+    //printf("%d, %d", x, y);
+    if (x < 0 || x >= row || y < 0 || y >= col)
     {
-      START_GAME_FIELD[x][y] = '*';
-      i++;
+      continue;
+    }
+    else
+    {
+      if (START_GAME_FIELD[x][y] != '*')
+      {
+        START_GAME_FIELD[x][y] = '*';
+        i++;
+      }
     }
   }
-}*/
+}
 
 
 int doureal ()
@@ -298,7 +254,7 @@ void clc__console__(int *dbf)
 {
   disableRawMode();
   char command[10];
-  printf("\n{clc} Enter command > ");
+  printf("\n{clc} Enter command $ ");
   scanf("%s", command);
 
   if (strcmp(command, "drowb") == 0)

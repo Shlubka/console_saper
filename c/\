@@ -16,6 +16,56 @@
 #define ColNum "\x1b[33m"
 //#define reset_curs printf("")
 
+void genCode(char **START_GAME_FIELD, int diff, int row, int col)
+{
+  int totalCells = row * col;
+  int numBombs = 0;
+  double threshold = 0.0;
+
+  switch (diff) {
+    case CUSTOM:
+      threshold = thcust();
+      break;
+    case EASY:
+      threshold = 0.1;
+      break;
+    case NORMAL:
+      threshold = 0.3;
+      break;
+    case HARD:
+      threshold = 0.5;
+      break;
+    case VERY_HARD:
+      threshold = 0.7;
+      break;
+    case IMPOSSIBLE:
+      threshold = 0.9;
+      break;
+  }
+
+  //int tex = row - 1;
+  //int tey = col - 1;
+  numBombs = totalCells * threshold;
+
+  for (int i = 0; i < numBombs; )
+  {
+    int x = (rand() % row);
+    int y = (rand() % col);
+    printf("%d, %d", x, y);
+    if (x < 0 || x >= col || y < 0 || y >= row)
+    {
+      continue;
+    }
+    else
+    {
+      if (START_GAME_FIELD[y][x] != '*')
+      {
+        START_GAME_FIELD[y][x] = '*';
+        i++;
+      }
+    }
+  }
+}
 
 
 int main(int argc, char *argv[])
@@ -23,23 +73,10 @@ int main(int argc, char *argv[])
   srand(time(NULL));
   int row, col, corx = 0, cory = 0, diff, x = 0, y = 0, width, height, dor, dbf = 0;
   char move;
+  if (strcmp(argv[0], "-db") == 0) {dbf = 0;}
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
   //welcome(&width, &height);
-
-  for (int i = 1; i < argc; i++)
-  {
-    if (strcmp(argv[i], "-db") == 0) {dbf = 1;}
-    if (strcmp(argv[i], "-d") == 0)
-    {
-      row = 10;
-      col = 10;
-      diff = 2;
-
-      goto deffolt_parametrs;
-    }
-  }
-
   printf("Enter the field dimensions (format: 30x30) ~> ");
   scanf("%dx%d", &row ,&col);
   if (row > height || col > width)
@@ -59,8 +96,8 @@ int main(int argc, char *argv[])
   }
 
   diff = choseDifficulty();
+
   //allocation memmory to fields
-deffolt_parametrs: diff = diff;
   char **START_GAME_FIELD = (char **)malloc(col * sizeof(char *));
   for (int i = 0; i < col; i++)
   {
@@ -90,7 +127,7 @@ deffolt_parametrs: diff = diff;
   {
     for (int j = 0; j < row; j++)
     {
-      START_GAME_FIELD[i][j] = 9;
+      //START_GAME_FIELD[i][j] = 9;
       WORK_FIELD[i][j] = 9;
       FLAG_FIELD[j][i] = 9;
     }
@@ -98,26 +135,26 @@ deffolt_parametrs: diff = diff;
   //allocation memmory to fields
 
   //#############################################
-  /*for (int i = 0; i < row; i++)
+  for (int i = 0; i < row; i++)
   {
     for (int j = 0; j < col; j++)
     {
       //printf("%c ", START_GAME_FIELD[i][j]);
       //START_GAME_FIELD[i][j] = '1';
     }
-  }*/
+  }
   //#############################################
   //genCode(START_GAME_FIELD, diff, row, col);
   genCode(START_GAME_FIELD, diff, col, row);
 
   //#############################################
-  /*for (int i = 0; i < row; i++)
+  for (int i = 0; i < row; i++)
   {
     for (int j = 0; j < col; j++)
     {
       //printf("%c ", START_GAME_FIELD[j][i]);
     }
-  }*/
+  }
   //#############################################
   enableRawMode();
   system("clear");
