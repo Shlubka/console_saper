@@ -101,7 +101,7 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
     return;
   }
 
-
+//вправо вниз
   for (int tcrx = corx; tcrx < col; tcrx++)
   {
     for (int tcry = cory; tcry < row; tcry++)
@@ -126,6 +126,85 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
     }
     if (aw){aw = 0; break;}
   }
+
+//влево вниз
+  for (int tcrx = corx; tcrx < col; tcrx++)
+  {
+    for (int tcry = cory; tcry > 0; tcry--)
+    {
+      int count = 0;
+      if (START_GAME_FIELD[tcrx][tcry]=='*')
+      {
+        break;
+      }
+      for (int i = 0; i < 8; i++)
+      {
+        int tx = tcrx + dx[i];
+        int ty = tcry + dy[i];
+
+        if (tx >= 0 && tx < col && ty >= 0 && ty < row && START_GAME_FIELD[tx][ty] == '*')
+        {
+          count++;
+        }
+      }
+      WORK_FIELD[tcrx][tcry] = count;
+      if (tcrx+1 < col && START_GAME_FIELD[tcrx+1][cory] == '*'){aw = 1; break;}
+    }
+    if (aw){aw = 0; break;}
+  }
+
+//вправо вверх
+  for (int tcrx = corx; tcrx > 0; tcrx--)
+  {
+    for (int tcry = cory; tcry < row; tcry++)
+    {
+      int count = 0;
+      if (START_GAME_FIELD[tcrx][tcry]=='*')
+      {
+        break;;
+      }
+      for (int i = 0; i < 8; i++)
+      {
+        int tx = tcrx + dx[i];
+        int ty = tcry + dy[i];
+
+        if (tx >= 0 && tx < col && ty >= 0 && ty < row && START_GAME_FIELD[tx][ty] == '*')
+        {
+          count++;
+        }
+      }
+      WORK_FIELD[tcrx][tcry] = count;
+      if (tcrx+1 < col && START_GAME_FIELD[tcrx-1][tcry - 1] == '*'){aw = 1; break;}
+    }
+    if (aw){aw = 0; break;}
+  }
+
+//влево вверх
+  for (int tcrx = corx; tcrx > 0; tcrx--)
+  {
+    for (int tcry = cory; tcry > 0; tcry--)
+    {
+      int count = 0;
+      if (START_GAME_FIELD[tcrx][tcry]=='*')
+      {
+        break;;
+      }
+      for (int i = 0; i < 8; i++)
+      {
+        int tx = tcrx + dx[i];
+        int ty = tcry + dy[i];
+
+        if (tx >= 0 && tx < col && ty >= 0 && ty < row && START_GAME_FIELD[tx][ty] == '*')
+        {
+          count++;
+        }
+      }
+      WORK_FIELD[tcrx][tcry] = count;
+      if (tcrx+1 < col && START_GAME_FIELD[tcrx-1][tcry-1] == '*'){aw = 1; break;}
+    }
+    if (aw){aw = 0; break;}
+  }
+
 }
 
 
