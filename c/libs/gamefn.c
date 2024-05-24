@@ -13,6 +13,7 @@
 #define ColRed "\x1b[31m"
 #define ColCors "\x1b[32m"
 #define ColNum "\x1b[33m"
+#define ColQe "\x1b[36m"
 //#define reset_curs printf("")
 
 #define CUSTOM 0
@@ -89,30 +90,43 @@ void loose(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
 
 
 
-void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int diff, int cory, int corx, int col, int row, int *height, int *x, int *y)
+void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, int col, int row)
 {
+  int aw = 0;
   int dx[] = {-1, 0, 1, 0, -1, -1, 1, 1};
   int dy[] = {0, 1, 0, -1, -1, 1, -1, 1};
-  int count = 0;
 
-  if (START_GAME_FIELD[corx][cory] == '*')
+  if (cory < 0 || corx > col || corx < 0 || cory > row || START_GAME_FIELD[corx][cory] == '*')
   {
     return;
   }
 
-for (int i = 0; i < 8; i++)
+
+  for (int tcrx = corx; tcrx < col; tcrx++)
   {
-    int tx = corx + dx[i];
-    int ty = cory + dy[i];
-
-    if (tx >= 0 && tx < col && ty >= 0 && ty < row && START_GAME_FIELD[tx][ty] == '*')
+    for (int tcry = cory; tcry < row; tcry++)
     {
-      count++;
-    }
-  }
-  WORK_FIELD[corx][cory] = count;
-}
+      int count = 0;
+      if (START_GAME_FIELD[tcrx][tcry]=='*')
+      {
+        break;;
+      }
+      for (int i = 0; i < 8; i++)
+      {
+        int tx = tcrx + dx[i];
+        int ty = tcry + dy[i];
 
+        if (tx >= 0 && tx < col && ty >= 0 && ty < row && START_GAME_FIELD[tx][ty] == '*')
+        {
+          count++;
+        }
+      }
+      WORK_FIELD[tcrx][tcry] = count;
+      if (tcrx+1 < col && START_GAME_FIELD[tcrx+1][cory] == '*'){aw = 1; break;}
+    }
+    if (aw){aw = 0; break;}
+  }
+}
 
 
 
@@ -278,9 +292,9 @@ void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
     {
       if(i == cory && j == corx){printf(ColCors "X " Reset);}
       else if (dbf == 1 && START_GAME_FIELD[j][i] == '*'){printf(ColRed"@ "Reset);}
-      else if (WORK_FIELD[j][i] != 9){printf("%d ", WORK_FIELD[j][i]);}
+      else if (WORK_FIELD[j][i] != 9){printf(ColNum "%d " Reset, WORK_FIELD[j][i]);}
       else if (FLAG_FIELD[i][j] == '1'){printf("F ");}
-      else{printf("? ");}
+      else{printf(ColQe"? "Reset);}
       fflush(stdout); // очищаем буфер вывода после каждой операции вывода
     }
 

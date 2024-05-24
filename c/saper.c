@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
     if (strcmp(argv[i], "-db") == 0) {dbf = 1;}
     if (strcmp(argv[i], "-d") == 0)
     {
-      row = 10;
-      col = 10;
+      row = 30;
+      col = 30;
       diff = 2;
 
       goto deffolt_parametrs;
@@ -204,7 +204,7 @@ deffolt_parametrs: diff = diff;
         loose(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, &height);
         return 0;
       }
-      open_cell(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, diff, cory, corx, col, row, &height, &x, &y);
+      open_cell(START_GAME_FIELD, WORK_FIELD, cory, corx, col, row);
       break;
   }
 }
