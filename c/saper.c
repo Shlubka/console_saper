@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
-  welcome(&width, &height);
+  //welcome(&width, &height);
 
   for (int i = 1; i < argc; i++)
   {
@@ -175,6 +175,7 @@ deffolt_parametrs: diff = diff;
         if (dor == 2)
         {
           printf("%d\n", dor);
+          //printf("\033[0;0H");
           system("killall mpv; clear; cowsay spasiba za igru!!");
           printf("\n");
           return 0;
@@ -198,8 +199,13 @@ deffolt_parametrs: diff = diff;
       system("killall mpv;clear");
       break;
     default:
-        open_cell(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, diff, cory, corx, col, row, &height, &x, &y);
-        break;
+      if (START_GAME_FIELD[corx][cory] == '*')
+      {
+        loose(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, &height);
+        return 0;
+      }
+      open_cell(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, diff, cory, corx, col, row, &height, &x, &y);
+      break;
   }
 }
   system("killall mpv");

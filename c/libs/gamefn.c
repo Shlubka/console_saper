@@ -41,31 +41,81 @@ void loose(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
   exit(0);
 }
 
-void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int diff, int cory, int corx, int col, int row, int *height, int *x, int *y) {
+
+
+
+/*void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int diff, int cory, int corx, int col, int row, int *height, int *x, int *y) {
   int count = 0;
+  int neighbors[8][2] = {
+        {cory-1, corx-1}, {cory-1, corx}, {cory-1, corx+1},
+        {cory,   corx-1},                {cory, corx+1},
+        {cory+1, corx-1}, {cory+1, corx}, {cory+1, corx+1}
+    };
+
+  if ((*(WORK_FIELD + corx))[cory] != '-' && *(FLAG_FIELD + corx)[cory] != 'F') {
+    return;
+  }
+
   if (START_GAME_FIELD[corx][cory] == '*')
   {
     loose(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, y, x, row, col, corx, cory, diff, height);
     return;
   }
 
-  for (int q = cory; q < row; q++)
-  {
-      for (int j = -1; j < 2; j++)
-    {
-    for (int i = -1; i < 2; i++)
-      {
-        if (START_GAME_FIELD[corx][q] == '*'){return;}
-        else if (corx + i < col &&j + q < row && corx + i >= 0 && cory + j >= 0) //&& i != 0 && j != 0)
-        {
-          if (START_GAME_FIELD[corx + i][j + q] == '*'){count = count + 1;}
+  for (int i = 0; i < 8; i++) {
+    int nx = neighbors[i][1];
+    int ny = neighbors[i][0];
+    if (nx >= 0 && nx < col && ny >= 0 && ny < row && START_GAME_FIELD[nx][ny] == '*') {
+      count++;
+    }
+  }
+
+  if ((*(WORK_FIELD + corx))[cory] == '-') {
+    (*(WORK_FIELD + corx))[cory] = count;
+    if (count == 0) {
+      for (int i = 0; i < 8; i++) {
+        int nx = neighbors[i][1];
+        int ny = neighbors[i][0];
+        if (nx >= 0 && nx < col && ny >= 0 && ny < row && (*(WORK_FIELD + nx))[ny] == '-' && (*(FLAG_FIELD + nx))[ny] != 'F') {
+          open_cell(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, diff, ny, nx, col, row, height, x, y);
         }
       }
     }
-  WORK_FIELD[corx][q] = count;
-  count = 0;
   }
+}*/
+
+
+
+
+
+
+void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int diff, int cory, int corx, int col, int row, int *height, int *x, int *y)
+{
+  int dx[] = {-1, 0, 1, 0, -1, -1, 1, 1};
+  int dy[] = {0, 1, 0, -1, -1, 1, -1, 1};
+  int count = 0;
+
+  if (START_GAME_FIELD[corx][cory] == '*')
+  {
+    return;
+  }
+
+for (int i = 0; i < 8; i++)
+  {
+    int tx = corx + dx[i];
+    int ty = cory + dy[i];
+
+    if (tx >= 0 && tx < col && ty >= 0 && ty < row && START_GAME_FIELD[tx][ty] == '*')
+    {
+      count++;
+    }
+  }
+  WORK_FIELD[corx][cory] = count;
 }
+
+
+
+
 
 int choseDifficulty()
 {
