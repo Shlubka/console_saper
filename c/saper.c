@@ -14,18 +14,20 @@
 #define ColRed "\x1b[31m"
 #define ColCors "\x1b[32m"
 #define ColNum "\x1b[33m"
+#define ColAnn "\x1b[36m"
 //#define reset_curs printf("")
 
 
 
 int main(int argc, char *argv[])
 {
-  srand(time(NULL));
+  //srand(time(NULL));
+  srand(1);
   int row, col, corx = 0, cory = 0, diff, x = 0, y = 0, width, height, dor, dbf = 0;
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
-  welcome(&width, &height);
+  //welcome(&width, &height);
 
   for (int i = 1; i < argc; i++)
   {
@@ -124,7 +126,7 @@ deffolt_parametrs: diff = diff;
   while(1)
   {
     indent(&width, &height, &x, &y, col, row);
-    dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, dbf);
+    dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, dbf, &height);
     //dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, col, row, corx, cory, diff);
     scanf("\n%c", &move);
 
@@ -196,7 +198,7 @@ deffolt_parametrs: diff = diff;
       system("killall mpv;clear");
       break;
     default:
-        open_cell(START_GAME_FIELD, WORK_FIELD, cory, corx, col, row);
+        open_cell(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, diff, cory, corx, col, row, &height, &x, &y);
         break;
   }
 }

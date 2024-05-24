@@ -1,7 +1,8 @@
+#include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-//#include <string.h>
+#include <string.h>
 
 void enableRawMode()
 {
@@ -35,17 +36,22 @@ void indent(int *width, int *height, int *x, int *y, int col, int row)
 }
 
 
-/*nt cli(int *fdb)
+void clc__console__(int *dbf)
 {
-  //char msg; // increased the size to hold a meaningful string
-  while (1) {
-    printf("\n{cli} Enter command > ");
-    scanf("%c", msg); // %255s to prevent buffer overflow
-    if (msg, 'd' == 0) { // compare the input with "db"
-      *fdb = 1;
-    }
-  }
-  //free(&msg);
-  return 0;
-}*/
+  disableRawMode();
+  char command[10];
+  printf("\n{clc} Enter command $ ");
+  scanf("%s", command);
 
+  if (strcmp(command, "drowb") == 0)
+  {
+    *dbf = 1;
+  }
+  if (strcmp(command, "ndrowb") == 0)
+  {
+    *dbf = 0;
+  }
+
+  system("clear");
+  enableRawMode();
+}

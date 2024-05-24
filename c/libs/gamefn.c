@@ -22,6 +22,8 @@
 #define VERY_HARD 4
 #define IMPOSSIBLE 5
 
+void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int dbf, int *width);
+
 float thcust()
 {
   float th = 0;
@@ -31,24 +33,24 @@ float thcust()
   return th;
 }
 
+void loose(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int *height)
+{
+  system("clear");
+  dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, y, x, row, col, corx, cory, diff, 1, height);
+  printf(ColRed"\nGAME OVER\n" Reset);
+  exit(0);
+}
 
-void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, int col, int row) {
+void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int diff, int cory, int corx, int col, int row, int *height, int *x, int *y) {
   int count = 0;
   if (START_GAME_FIELD[corx][cory] == '*')
   {
-    printf("loooooooseeeer");
+    loose(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, y, x, row, col, corx, cory, diff, height);
     return;
   }
-  /*if (WORK_FIELD[corx][cory])
-  {
-    return;
-  }*/
 
-  //int tempy = cory; tempx = corx;
   for (int q = cory; q < row; q++)
   {
-  //for (int w = corx - 1; w < col; w++)
-  //{
       for (int j = -1; j < 2; j++)
     {
     for (int i = -1; i < 2; i++)
@@ -56,17 +58,14 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
         if (START_GAME_FIELD[corx][q] == '*'){return;}
         else if (corx + i < col &&j + q < row && corx + i >= 0 && cory + j >= 0) //&& i != 0 && j != 0)
         {
-          //if (START_GAME_FIELD[corx + i][j + q] == '*'){count = count + 1;}
-          if (START_GAME_FIELD[corx + i][j + q-1] == '*'){count = count + 1;}
+          if (START_GAME_FIELD[corx + i][j + q] == '*'){count = count + 1;}
         }
       }
     }
   WORK_FIELD[corx][q] = count;
   count = 0;
   }
-  //}
 }
-
 
 int choseDifficulty()
 {
@@ -195,7 +194,7 @@ int confirmInput(int width, int height, const char* message, int defaultWidth, i
 
 
 
-void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int dbf)
+void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int dbf, int *width)
 {
   printf("\033[0;0H");
   printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
@@ -247,25 +246,8 @@ void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
   printf("╝\n");
   fflush(stdout); // очищаем буфер вывода после каждой операции вывода
   //printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
+  int fdsfdbv = *width-1;
+  printf("\033[%d;1H", fdsfdbv);
   printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
 }
 
-void clc__console__(int *dbf)
-{
-  disableRawMode();
-  char command[10];
-  printf("\n{clc} Enter command $ ");
-  scanf("%s", command);
-
-  if (strcmp(command, "drowb") == 0)
-  {
-    *dbf = 1;
-  }
-  if (strcmp(command, "ndrowb") == 0)
-  {
-    *dbf = 0;
-  }
-
-  system("clear");
-  enableRawMode();
-}
