@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
-  //welcome(&width, &height);
+  welcome(&width, &height);
 
   for (int i = 1; i < argc; i++)
   {

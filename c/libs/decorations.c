@@ -19,7 +19,7 @@ void *music_welcome(void *arg) {
         : "r" (x0)
         : "memory", "cc"
     );*/
-  //system("./asm");
+  system("./asm-86");
 
     return NULL;
 }
@@ -37,10 +37,10 @@ void *welcome_print(void *arg)
   //sleep(5);
 
     //for (int i = 0; i < height/4; i++){printf("\n");}
-    printf("\033[%dB", height/2);
-    for (int i = 0; i < width/3; i++){printf(" ");}
+    printf("\033[%dB", width/10);
+    for (int i = 0; i < height; i++){printf(" ");}
 
-  if (height <= 50)
+  if (height <= 25)
   {
     sleep(3);
     system("clear");
@@ -52,27 +52,27 @@ void *welcome_print(void *arg)
   else
   {
     printf("██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗                       \n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝                       \n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗                         \n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝                         \n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗                       \n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf(" ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝                       \n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("████████╗ ██████╗     ███╗   ███╗██╗   ██╗     ██████╗  █████╗ ███╗   ███╗███████╗██╗\n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("╚══██╔══╝██╔═══██╗    ████╗ ████║╚██╗ ██╔╝    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝██║\n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("   ██║   ██║   ██║    ██╔████╔██║ ╚████╔╝     ██║  ███╗███████║██╔████╔██║█████╗  ██║\n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("   ██║   ██║   ██║    ██║╚██╔╝██║  ╚██╔╝      ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  ╚═╝\n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("   ██║   ╚██████╔╝    ██║ ╚═╝ ██║   ██║       ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗██╗\n");
-    for (int i = 0; i < height/3; i++){printf(" ");}
+    for (int i = 0; i < height; i++){printf(" ");}
     printf("   ╚═╝    ╚═════╝     ╚═╝     ╚═╝   ╚═╝        ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝╚═╝\n""\x1b[0m");
     sleep(5);
     system("clear");
