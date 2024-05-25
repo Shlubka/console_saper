@@ -25,20 +25,11 @@
 
 void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int dbf, int *width);
 
-float thcust()
-{
-  float th = 0;
-  printf("Enter your custom persentage of bombs ~> ");
-  scanf("%f", &th);
-  th = th * 0.01;
-  return th;
-}
 
 void EndGame(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int *height, char* msg)
 {
   system("clear");
   dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, y, x, row, col, corx, cory, diff, 1, height);
-  //printf(ColRed"\nGAME OVER\n" Reset);
   printf("%s", msg);
   exit(0);
 }
@@ -180,6 +171,7 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
     system("clear");
     printf("You've Won!!!!\nYour score: %d\n", *wincounter);
     system("cowsay POBEDAAA, horosh!!");
+    //EndGame(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int *height, char *msg);
     exit(0);
   }
 }
@@ -193,7 +185,7 @@ int choseDifficulty()
   while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
   {
     system("clear");
-    printf("Enter your difficulty:\n0 - custom (enter your percent)\n1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n4 - very hard (70%% bombs)\n5 - IMPOSSIBLE (90%% bombs)\n~> ");
+    printf("1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n~> ");
     scanf("%d", &diff);
   }
   return diff;
@@ -216,9 +208,6 @@ int genCode(char **START_GAME_FIELD, int diff, int row, int col, int corx, int c
   double threshold = 0.0;
 
   switch (diff) {
-    case CUSTOM:
-      threshold = thcust();
-      break;
     case EASY:
       threshold = 0.1;
       break;
@@ -227,12 +216,6 @@ int genCode(char **START_GAME_FIELD, int diff, int row, int col, int corx, int c
       break;
     case HARD:
       threshold = 0.5;
-      break;
-    case VERY_HARD:
-      threshold = 0.7;
-      break;
-    case IMPOSSIBLE:
-      threshold = 0.9;
       break;
   }
 
@@ -264,6 +247,8 @@ int doureal ()
   char yn[4];
   while (1)
   {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
     printf("Do you really want to quit the game? (no/yes): ");
     scanf("%3s", yn);
 
@@ -286,7 +271,8 @@ int confirmInput(int width, int height, const char* message, int defaultWidth, i
   while (1)
   {
     printf("%s", message);
-    getchar();  // Clear newline character from previous input
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
     if (fgets(ok, sizeof ok, stdin) == NULL || strcmp(ok, "\n") == 0)
     {
       return 1;
@@ -337,7 +323,6 @@ void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
     {
       printf(" ");
     }
-   //printf("drow");
     printf("║ ");
     for(int i = 0; i < row; i++)
     {
@@ -360,7 +345,6 @@ void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
   for (int j = 0; j < row; j++){printf("══");}
   printf("╝\n");
   fflush(stdout); // очищаем буфер вывода после каждой операции вывода
-  //printf("%d, %d, %d, %d, %d\n", corx, cory, row, col, num);
   int fdsfdbv = *width-1;
   printf("\033[%d;1H", fdsfdbv);
   printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");

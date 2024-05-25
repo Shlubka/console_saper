@@ -21,8 +21,8 @@
 
 int main(int argc, char *argv[])
 {
-  int seed = time(NULL);
-  srand(seed);
+  //int seed = time(NULL);
+  srand(time(NULL));
   int row, col, corx = 0, cory = 0, diff, x = 0, y = 0, width, height, dor, dbf = 0, gcf = 1, bn, wincounter = 0;
   char move;
   term_size(&height, &width);
