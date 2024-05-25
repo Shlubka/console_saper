@@ -8,37 +8,20 @@
 
 
 void *music_welcome(void *arg) {
-    //aarch64 asm
-    /*char* command = "mpv --loop=inf --quiet --no-video --no-terminal 1.mp3";
-
-    register long x0 asm("x0") = (long)command;
-
-    asm volatile (
-        "bl system\n"
-        :
-        : "r" (x0)
-        : "memory", "cc"
-    );*/
   system("./asm-86");
-
     return NULL;
 }
 
 void *welcome_print(void *arg)
 {
-  //sleep(1);
   int *params = (int*) arg;
   int width = params[0];
   int height = params[1];
   system("clear");
   printf("\x1b[32m" );
 
-  //printf("%d, %d", width, height);
-  //sleep(5);
-
-    //for (int i = 0; i < height/4; i++){printf("\n");}
-    printf("\033[%dB", width/10);
-    for (int i = 0; i < height; i++){printf(" ");}
+  printf("\033[%dB", width/10);
+  for (int i = 0; i < height; i++){printf(" ");}
 
   if (height <= 25)
   {
@@ -86,8 +69,5 @@ void welcome(int *width, int *height){
 
   pthread_create(&t1, NULL, music_welcome, NULL);
   pthread_create(&t1, NULL, welcome_print, (void*)params);
-  //welcome_print(width, height);
-  //pthread_create(&t2, NULL, welcome_print, NULL)t
   pthread_join(t1, NULL);
-  //pthread_join(t2, NULL);
 }

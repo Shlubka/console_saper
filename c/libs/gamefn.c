@@ -34,63 +34,17 @@ float thcust()
   return th;
 }
 
-void loose(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int *height)
+void EndGame(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int *height, char* msg)
 {
   system("clear");
   dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, y, x, row, col, corx, cory, diff, 1, height);
-  printf(ColRed"\nGAME OVER\n" Reset);
+  //printf(ColRed"\nGAME OVER\n" Reset);
+  printf("%s", msg);
   exit(0);
 }
 
 
-
-
-/*void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int diff, int cory, int corx, int col, int row, int *height, int *x, int *y) {
-  int count = 0;
-  int neighbors[8][2] = {
-        {cory-1, corx-1}, {cory-1, corx}, {cory-1, corx+1},
-        {cory,   corx-1},                {cory, corx+1},
-        {cory+1, corx-1}, {cory+1, corx}, {cory+1, corx+1}
-    };
-
-  if ((*(WORK_FIELD + corx))[cory] != '-' && *(FLAG_FIELD + corx)[cory] != 'F') {
-    return;
-  }
-
-  if (START_GAME_FIELD[corx][cory] == '*')
-  {
-    loose(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, y, x, row, col, corx, cory, diff, height);
-    return;
-  }
-
-  for (int i = 0; i < 8; i++) {
-    int nx = neighbors[i][1];
-    int ny = neighbors[i][0];
-    if (nx >= 0 && nx < col && ny >= 0 && ny < row && START_GAME_FIELD[nx][ny] == '*') {
-      count++;
-    }
-  }
-
-  if ((*(WORK_FIELD + corx))[cory] == '-') {
-    (*(WORK_FIELD + corx))[cory] = count;
-    if (count == 0) {
-      for (int i = 0; i < 8; i++) {
-        int nx = neighbors[i][1];
-        int ny = neighbors[i][0];
-        if (nx >= 0 && nx < col && ny >= 0 && ny < row && (*(WORK_FIELD + nx))[ny] == '-' && (*(FLAG_FIELD + nx))[ny] != 'F') {
-          open_cell(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, diff, ny, nx, col, row, height, x, y);
-        }
-      }
-    }
-  }
-}*/
-
-
-
-
-
-
-void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, int col, int row)
+void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, int col, int row, int bn, int *wincounter)
 {
   int aw = 0;
   int dx[] = {-1, 0, 1, 0, -1, -1, 1, 1};
@@ -121,8 +75,12 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
           count++;
         }
       }
-      WORK_FIELD[tcrx][tcry] = count;
-      if (tcrx+1 < col && START_GAME_FIELD[tcrx+1][cory] == '*'){aw = 1; break;}
+       if (WORK_FIELD[tcrx][tcry] == 9)
+      {
+        (*wincounter)++;
+        WORK_FIELD[tcrx][tcry] = count;
+      }
+     if (tcrx+1 < col && START_GAME_FIELD[tcrx+1][cory] == '*'){aw = 1; break;}
     }
     if (aw){aw = 0; break;}
   }
@@ -147,7 +105,11 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
           count++;
         }
       }
-      WORK_FIELD[tcrx][tcry] = count;
+      if (WORK_FIELD[tcrx][tcry] == 9)
+      {
+        (*wincounter)++;
+        WORK_FIELD[tcrx][tcry] = count;
+      }
       if (tcrx+1 < col && START_GAME_FIELD[tcrx+1][cory] == '*'){aw = 1; break;}
     }
     if (aw){aw = 0; break;}
@@ -173,8 +135,12 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
           count++;
         }
       }
-      WORK_FIELD[tcrx][tcry] = count;
-      if (tcrx+1 < col && START_GAME_FIELD[tcrx-1][tcry - 1] == '*'){aw = 1; break;}
+      if (WORK_FIELD[tcrx][tcry] == 9)
+      {
+        (*wincounter)++;
+        WORK_FIELD[tcrx][tcry] = count;
+      }
+      if (tcrx+1 < col && START_GAME_FIELD[tcrx-1][tcry] == '*'){aw = 1; break;}////////////////
     }
     if (aw){aw = 0; break;}
   }
@@ -199,12 +165,23 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
           count++;
         }
       }
-      WORK_FIELD[tcrx][tcry] = count;
-      if (tcrx+1 < col && START_GAME_FIELD[tcrx-1][tcry-1] == '*'){aw = 1; break;}
+      if (WORK_FIELD[tcrx][tcry] == 9)
+      {
+        (*wincounter)++;
+        WORK_FIELD[tcrx][tcry] = count;
+      }
+      if (tcrx+1 < col && START_GAME_FIELD[tcrx-1][tcry] == '*'){aw = 1; break;}/////////////////////
     }
     if (aw){aw = 0; break;}
   }
 
+  if (bn <= *wincounter)
+  {
+    system("clear");
+    printf("You've Won!!!!\nYour score: %d\n", *wincounter);
+    system("cowsay POBEDAAA, horosh!!");
+    exit(0);
+  }
 }
 
 
@@ -232,7 +209,7 @@ void addFlag(char **FLAG_FIELD, int cory, int corx)
   else FLAG_FIELD[corx][cory] = '0';
 }
 
-void genCode(char **START_GAME_FIELD, int diff, int row, int col)
+int genCode(char **START_GAME_FIELD, int diff, int row, int col, int corx, int cory)
 {
   int totalCells = row * col;
   int numBombs = 0;
@@ -259,36 +236,32 @@ void genCode(char **START_GAME_FIELD, int diff, int row, int col)
       break;
   }
 
-  //int tex = row - 1;
-  //int tey = col - 1;
-  //numBombs = totalCells * threshold;
-  numBombs = totalCells * diff / 10;
+  numBombs = totalCells * threshold;
 
   for (int i = 0; i < numBombs; )
   {
     int x = (rand() % row);
     int y = (rand() % col);
-    //printf("%d, %d", x, y);
     if (x < 0 || x >= row || y < 0 || y >= col)
     {
       continue;
     }
     else
     {
-      if (START_GAME_FIELD[x][y] != '*')
+      if (START_GAME_FIELD[x][y] != '*' && x != corx && y != cory)
       {
         START_GAME_FIELD[x][y] = '*';
         i++;
       }
     }
   }
+  return totalCells - numBombs;
 }
 
 
 int doureal ()
 {
   char yn[4];
-  //disableRawMode();
   while (1)
   {
     printf("Do you really want to quit the game? (no/yes): ");
@@ -303,7 +276,6 @@ int doureal ()
     {
       return 2;
     }
-
     printf("Please enter a valid response.\n\n");
   }
 }

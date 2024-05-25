@@ -21,9 +21,9 @@
 
 int main(int argc, char *argv[])
 {
-  //srand(time(NULL));
-  srand(1);
-  int row, col, corx = 0, cory = 0, diff, x = 0, y = 0, width, height, dor, dbf = 0;
+  int seed = time(NULL);
+  srand(seed);
+  int row, col, corx = 0, cory = 0, diff, x = 0, y = 0, width, height, dor, dbf = 0, gcf = 1, bn, wincounter = 0;
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
@@ -44,6 +44,10 @@ int main(int argc, char *argv[])
 
   printf("Enter the field dimensions (format: 30x30) ~> ");
   scanf("%dx%d", &row ,&col);
+  /*printf("Enter num of rows ~> ");
+  scanf("%d", &col);
+  printf("Enter num of col ~> ");
+  scanf("%d", &row);*/
   if (row > height || col > width)
   {
     if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) ~> ", width / 4, height / 2) == 0)
@@ -97,38 +101,21 @@ deffolt_parametrs: diff = diff;
       FLAG_FIELD[j][i] = 9;
     }
   }
-  //allocation memmory to fields
 
-  //#############################################
-  /*for (int i = 0; i < row; i++)
-  {
-    for (int j = 0; j < col; j++)
-    {
-      //printf("%c ", START_GAME_FIELD[i][j]);
-      //START_GAME_FIELD[i][j] = '1';
-    }
-  }*/
-  //#############################################
-  //genCode(START_GAME_FIELD, diff, row, col);
-  genCode(START_GAME_FIELD, diff, col, row);
-
-  //#############################################
-  /*for (int i = 0; i < row; i++)
-  {
-    for (int j = 0; j < col; j++)
-    {
-      //printf("%c ", START_GAME_FIELD[j][i]);
-    }
-  }*/
-  //#############################################
   enableRawMode();
   system("clear");
+  //getchar();
+  //fflush(stdin);
+  //scanf("");
+
+  int c;
+  while ((c = getchar()) != '\n' && c != EOF) { }
+
   while(1)
   {
     indent(&width, &height, &x, &y, col, row);
     dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, dbf, &height);
-    //dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, col, row, corx, cory, diff);
-    scanf("\n%c", &move);
+    scanf("%c", &move);
 
     switch(move)
     {
@@ -199,12 +186,13 @@ deffolt_parametrs: diff = diff;
       system("killall mpv;clear");
       break;
     default:
+      if (gcf){bn = genCode(START_GAME_FIELD, diff, col, row, corx, cory); gcf =0;}
       if (START_GAME_FIELD[corx][cory] == '*')
       {
-        loose(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, &height);
+        EndGame(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, &height, ColRed"\nGAME OVER\n" Reset);
         return 0;
       }
-      open_cell(START_GAME_FIELD, WORK_FIELD, cory, corx, col, row);
+      open_cell(START_GAME_FIELD, WORK_FIELD, cory, corx, col, row, bn, &wincounter);
       break;
   }
 }
