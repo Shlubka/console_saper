@@ -25,6 +25,34 @@
 
 void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int dbf, int *width);
 
+void add_score(int new_score) {
+    FILE *file = fopen("scores.txt", "r+");
+
+    if (file == NULL) {
+        return;
+    }
+
+    int minNumber = new_score;
+    int minPosition = 0;
+
+    int currentNumber;
+    int position = 0;
+
+    rewind(file);
+    while (fscanf(file, "%d", &currentNumber) == 1) {
+        if (currentNumber < minNumber) {
+            minNumber = currentNumber;
+            minPosition = position;
+        }
+        position++;
+    }
+
+    fseek(file, minPosition * sizeof(int), SEEK_SET);
+
+
+    fprintf(file, "%d ", new_score);
+
+    fclose(file);}
 
 void EndGame(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int *height, char* msg)
 {
@@ -35,7 +63,7 @@ void EndGame(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int 
 }
 
 
-void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, int col, int row, int bn, int *wincounter)
+void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, int col, int row, int bn, int *wincounter, int diff)
 {
   int aw = 0;
   int dx[] = {-1, 0, 1, 0, -1, -1, 1, 1};
@@ -168,6 +196,11 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
 
   if (bn <= *wincounter)
   {
+    int winc = *wincounter;
+    //if (diff == 1){winc}
+    if (diff == 2){winc = winc * 12;}
+    if (diff == 3){winc = winc * 117;}
+    add_score(winc);
     system("clear");
     printf("You've Won!!!!\nYour score: %d\n", *wincounter);
     system("cowsay POBEDAAA, horosh!!");
@@ -186,6 +219,7 @@ int choseDifficulty()
   {
     system("clear");
     printf("1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n~> ");
+    fflush(stdin);
     scanf("%d", &diff);
   }
   return diff;
@@ -247,8 +281,6 @@ int doureal ()
   char yn[4];
   while (1)
   {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
     printf("Do you really want to quit the game? (no/yes): ");
     scanf("%3s", yn);
 

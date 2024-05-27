@@ -104,49 +104,31 @@ deffolt_parametrs: diff = diff;
 
   enableRawMode();
   system("clear");
-  //getchar();
-  //fflush(stdin);
-  //scanf("");
-
-  int c;
-  while ((c = getchar()) != '\n' && c != EOF) { }
 
   while(1)
   {
     indent(&width, &height, &x, &y, col, row);
     dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, dbf, &height);
-    scanf("%c", &move);
 
+    scanf("%c", &move);
     switch(move)
     {
     case 'w':
-        corx--;
-        if (corx < 0){corx = col-1;}
-        break;
     case 'k':
         corx--;
         if (corx < 0){corx = col-1;}
         break;
     case 's':
-        corx++;
-        if (corx > col - 1){corx= 0;}
-        break;
     case 'j':
         corx++;
         if (corx > col - 1){corx= 0;}
         break;
     case 'a':
-        cory--;
-        if (cory < 0){cory = row-1;}
-        break;
     case 'h':
         cory--;
         if (cory < 0){cory = row-1;}
         break;
     case 'd':
-        cory++;
-        if (cory > row - 1){cory= 0;}
-        break;
     case 'l':
         cory++;
         if (cory > row - 1){cory= 0;}
@@ -172,6 +154,7 @@ deffolt_parametrs: diff = diff;
           enableRawMode();
           break;
         }
+        break;
     case 'f':
         addFlag(FLAG_FIELD, corx, cory);
         break;
@@ -185,14 +168,17 @@ deffolt_parametrs: diff = diff;
     case '2':
       system("killall mpv;clear");
       break;
-    default:
+    case 'c':
+    case 'n':
       if (gcf){bn = genCode(START_GAME_FIELD, diff, col, row, corx, cory); gcf =0;}
       if (START_GAME_FIELD[corx][cory] == '*')
       {
         EndGame(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, &height, ColRed"\nGAME OVER\n" Reset);
         return 0;
       }
-      open_cell(START_GAME_FIELD, WORK_FIELD, cory, corx, col, row, bn, &wincounter);
+      disableRawMode();
+      open_cell(START_GAME_FIELD, WORK_FIELD, cory, corx, col, row, bn, &wincounter, diff);
+      enableRawMode();
       break;
   }
 }

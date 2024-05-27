@@ -4,6 +4,28 @@
 #include <sys/ioctl.h>
 #include <string.h>
 
+#define MAX_SCORES 10
+#define MAX_NAME_LEN 50
+
+void print_leaderboard() {
+    FILE *file;
+    char line[100];
+
+    file = fopen("scores.txt", "r");
+    if (file == NULL) {
+        printf("Error: Unable to open file.\n");
+        return;
+    }
+
+    // Read and print lines from the file
+    while (fgets(line, sizeof(line), file) != NULL) {
+      if(strcmp(line, "\n") == 0){continue;}
+        printf("%s", line);
+    }
+
+    fclose(file);
+}
+
 void enableRawMode()
 {
     struct termios raw;
@@ -49,6 +71,12 @@ void clc__console__(int *dbf)
   if (strcmp(command, "ndrowb") == 0)
   {
     *dbf = 0;
+  }
+  if (strcmp(command, "lead") == 0)
+  {
+  system("clear");
+  print_leaderboard();
+  scanf("%s", command);
   }
 
   system("clear");
