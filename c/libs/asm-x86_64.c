@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 
 int main() {
     char* cmd = "mpv --loop=inf --quiet --no-video --no-terminal 1.mp3";
@@ -15,7 +14,6 @@ int main() {
     );
 
     if (result != 0) {
-        printf("Error: command execution failed\n");
         return 1;
     }
 

@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <signal.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -17,17 +19,22 @@
 #define ColAnn "\x1b[36m"
 //#define reset_curs printf("")
 
+int restart_flag = 0;
 
+void restart_handler(int signal) {
+    restart_flag = 1; // установка флага перезапуска
+}
 
 int main(int argc, char *argv[])
 {
+   signal(SIGUSR1, restart_handler);
   //int seed = time(NULL);
   srand(time(NULL));
   int row, col, corx = 0, cory = 0, diff, x = 0, y = 0, width, height, dor, dbf = 0, gcf = 1, bn, wincounter = 0;
   char move;
   term_size(&height, &width);
   indent(&width, &height, &x, &y, col, row);
-  //welcome(&width, &height);
+  welcome(&width, &height);
 
   for (int i = 1; i < argc; i++)
   {
@@ -44,10 +51,6 @@ int main(int argc, char *argv[])
 
   printf("Enter the field dimensions (format: 30x30) ~> ");
   scanf("%dx%d", &row ,&col);
-  /*printf("Enter num of rows ~> ");
-  scanf("%d", &col);
-  printf("Enter num of col ~> ");
-  scanf("%d", &row);*/
   if (row > height || col > width)
   {
     if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) ~> ", width / 4, height / 2) == 0)
@@ -114,37 +117,46 @@ deffolt_parametrs: diff = diff;
     switch(move)
     {
     case 'w':
+    case 'W':
     case 'k':
+    case 'K':
         corx--;
         if (corx < 0){corx = col-1;}
         break;
     case 's':
+    case 'S':
     case 'j':
+    case 'J':
         corx++;
         if (corx > col - 1){corx= 0;}
         break;
     case 'a':
+    case 'A':
     case 'h':
+    case 'H':
         cory--;
         if (cory < 0){cory = row-1;}
         break;
     case 'd':
+    case 'D':
     case 'l':
+    case 'L':
         cory++;
         if (cory > row - 1){cory= 0;}
         break;
     case 'r':
+    case 'R':
         system("clear");
         term_size(&height, &width);
         break;
     case 'q':
+    case 'Q':
         system("clear");
         disableRawMode();
         dor = doureal();
         if (dor == 2)
         {
           printf("%d\n", dor);
-          //printf("\033[0;0H");
           system("killall mpv; clear; cowsay spasiba za igru!!");
           printf("\n");
           return 0;
@@ -156,20 +168,19 @@ deffolt_parametrs: diff = diff;
         }
         break;
     case 'f':
+    case 'F':
         addFlag(FLAG_FIELD, corx, cory);
         break;
     case '`':
-        //printf("\npisun\n");
         clc__console__(&dbf);
         break;
-    case '0':
-      system("mpv --loop=inf --quiet --no-video --no-terminal libs/0.mp3");
-      break;
     case '2':
       system("killall mpv;clear");
       break;
     case 'c':
+    case 'C':
     case 'n':
+    case 'N':
       if (gcf){bn = genCode(START_GAME_FIELD, diff, col, row, corx, cory); gcf =0;}
       if (START_GAME_FIELD[corx][cory] == '*')
       {
@@ -180,6 +191,20 @@ deffolt_parametrs: diff = diff;
       open_cell(START_GAME_FIELD, WORK_FIELD, cory, corx, col, row, bn, &wincounter, diff);
       enableRawMode();
       break;
+    case 'T':
+      printf("\n");
+      disableRawMode();
+      if (doureal())
+      {
+        raise(SIGUSR1);
+      }
+  }
+  if (restart_flag) {
+    fflush(stdin);
+    fflush(stdout);
+    restart_flag = 0; // сброс флага перезапуска
+    char *argv[] = {"./saper", NULL}; // массив аргументов для вызова новой копии игры
+    execv(argv[0], argv); // запуск новой копии игры и завершение текущего процесса
   }
 }
   system("killall mpv");

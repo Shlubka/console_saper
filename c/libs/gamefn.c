@@ -330,7 +330,7 @@ int confirmInput(int width, int height, const char* message, int defaultWidth, i
 void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int dbf, int *width)
 {
   printf("\033[0;0H");
-  printf("X - coursour; ? - closed cell; F - your flag; # - free open cell\n");
+  printf(ColCors"X - coursour;"ColQe" ? - closed cell;"Reset" F - your flag\n");
   printf("Your difficult: ");
   if (diff == 1){printf("easy\n");}
   else if (diff == 2){printf("normal\n");}
@@ -338,6 +338,7 @@ void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
   else if (diff == 4){printf("very hard\n");}
   else if (diff == 5){printf("IMPOSSIBLE\n");}
   else if (diff == 0){printf("custom\n");}
+  printf(ColRed"V sluchae vihoda ili porajeniy ochki ne zachtutsy"Reset);
   for (int n = 0; n < *y; n++)
   {
     printf("\n");
@@ -379,6 +380,6 @@ void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
   fflush(stdout); // очищаем буфер вывода после каждой операции вывода
   int fdsfdbv = *width-1;
   printf("\033[%d;1H", fdsfdbv);
-  printf("command: 1 - tern up music; 2 - tern down music; q - quit the game; w, a, s, d - move coursour; any key - open cells; r - redrow");
+  printf("2 - tern down music; q - quit the game; w/k, a/h, s/j, d/l - move coursour; c/n - open cells; r - redrow, T - reload game");
 }
 
