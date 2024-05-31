@@ -23,7 +23,7 @@ void *welcome_print(void *arg)
   printf("\033[%dB", width/10);
   for (int i = 0; i < height; i++){printf(" ");}
 
-  if (height <= 25)
+  if (height <= 50)
   {
     sleep(3);
     system("clear");

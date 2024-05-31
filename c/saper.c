@@ -44,13 +44,29 @@ int main(int argc, char *argv[])
       row = 30;
       col = 30;
       diff = 2;
+      //dbf = 1;
 
       goto deffolt_parametrs;
     }
   }
 
   printf("Enter the field dimensions (format: 30x30) ~> ");
-  scanf("%dx%d", &row ,&col);
+  while (1)
+  {
+    if (scanf("%dx%d", &row, &col) != 2)
+    {
+      printf("Input ERROR, please enter again (format: 30x30) ~> ");
+      //while (getchar() != '\n');  // очищаем буфер ввода
+      continue;
+    }
+    if (row <= 0 || col <= 0)
+    {
+      printf("Input ERROR, please enter again (format: 30x30) ~> ");
+      continue;
+    }
+    break;
+  }
+
   if (row > height || col > width)
   {
     if (confirmInput(width, height, "The size of your field is larger than the size of the terminal. Are you sure? (Yes/no) ~> ", width / 4, height / 2) == 0)
@@ -110,7 +126,6 @@ deffolt_parametrs: diff = diff;
 
   while(1)
   {
-    indent(&width, &height, &x, &y, col, row);
     dryFd(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, dbf, &height);
 
     scanf("%c", &move);
@@ -148,17 +163,17 @@ deffolt_parametrs: diff = diff;
     case 'R':
         system("clear");
         term_size(&height, &width);
+    	indent(&width, &height, &x, &y, col, row);
         break;
-    case 'q':
     case 'Q':
         system("clear");
         disableRawMode();
         dor = doureal();
         if (dor == 2)
         {
-          printf("%d\n", dor);
+          //printf("%d\n", dor);
           system("killall mpv; clear; cowsay spasiba za igru!!");
-          printf("\n");
+          //printf("\n");
           return 0;
         }
         else if (dor == 1)
@@ -207,6 +222,6 @@ deffolt_parametrs: diff = diff;
     execv(argv[0], argv); // запуск новой копии игры и завершение текущего процесса
   }
 }
-  system("killall mpv");
+  //system("killall mpv");
 }
 

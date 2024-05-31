@@ -25,12 +25,13 @@
 
 void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int dbf, int *width);
 
-void add_score(int new_score) {
+void add_score(int new_score)
+{
     FILE *file = fopen("scores.txt", "r+");
 
-    if (file == NULL) {
-        return;
-    }
+    //if (file == NULL) {
+        //return;
+    //}
 
     int minNumber = new_score;
     int minPosition = 0;
@@ -39,8 +40,10 @@ void add_score(int new_score) {
     int position = 0;
 
     rewind(file);
-    while (fscanf(file, "%d", &currentNumber) == 1) {
-        if (currentNumber < minNumber) {
+    while (fscanf(file, "%d", &currentNumber) == 1)
+    {
+        if (currentNumber < minNumber)
+	{
             minNumber = currentNumber;
             minPosition = position;
         }
@@ -52,7 +55,8 @@ void add_score(int new_score) {
 
     fprintf(file, "%d ", new_score);
 
-    fclose(file);}
+    fclose(file);
+}
 
 void EndGame(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int *height, char* msg)
 {
@@ -82,7 +86,7 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
       int count = 0;
       if (START_GAME_FIELD[tcrx][tcry]=='*')
       {
-        break;;
+        break;
       }
       for (int i = 0; i < 8; i++)
       {
@@ -94,6 +98,8 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
           count++;
         }
       }
+
+
        if (WORK_FIELD[tcrx][tcry] == 9)
       {
         (*wincounter)++;
@@ -142,7 +148,7 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
       int count = 0;
       if (START_GAME_FIELD[tcrx][tcry]=='*')
       {
-        break;;
+        break;
       }
       for (int i = 0; i < 8; i++)
       {
@@ -172,7 +178,7 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
       int count = 0;
       if (START_GAME_FIELD[tcrx][tcry]=='*')
       {
-        break;;
+        break;
       }
       for (int i = 0; i < 8; i++)
       {
@@ -198,11 +204,11 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
   {
     int winc = *wincounter;
     //if (diff == 1){winc}
-    if (diff == 2){winc = winc * 12;}
-    if (diff == 3){winc = winc * 117;}
+    if (diff == 2){winc = winc * 5;}
+    if (diff == 3){winc = winc * 9;}
     add_score(winc);
     system("clear");
-    printf("You've Won!!!!\nYour score: %d\n", *wincounter);
+    printf("You've Won!!!!\nYour score: %d\n", winc);
     system("cowsay POBEDAAA, horosh!!");
     //EndGame(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, int *y, int *x, int row, int col, int corx, int cory, int diff, int *height, char *msg);
     exit(0);
@@ -218,7 +224,7 @@ int choseDifficulty()
   while (diff != CUSTOM && diff != EASY && diff != NORMAL && diff != HARD && diff != VERY_HARD && diff != IMPOSSIBLE)
   {
     system("clear");
-    printf("1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\n~> ");
+    printf("1 - easy (10%% bombs)\n2 - normal (30%% bombs)\n3 - hard (50%% bombs)\nEnter num ~> ");
     fflush(stdin);
     scanf("%d", &diff);
   }
@@ -380,6 +386,6 @@ void dryFd(char **START_GAME_FIELD, char **WORK_FIELD, char **FLAG_FIELD, int *y
   fflush(stdout); // очищаем буфер вывода после каждой операции вывода
   int fdsfdbv = *width-1;
   printf("\033[%d;1H", fdsfdbv);
-  printf("2 - tern down music; q - quit the game; w/k, a/h, s/j, d/l - move coursour; c/n - open cells; r - redrow, T - reload game");
+  printf("2 - tern down music; Q - quit the game; w/k, a/h, s/j, d/l - move coursour; c/n - open cells; r - redrow, T - reload game");
 }
 
