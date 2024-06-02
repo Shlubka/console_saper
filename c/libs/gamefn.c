@@ -205,7 +205,7 @@ void open_cell(char **START_GAME_FIELD, char **WORK_FIELD, int cory, int corx, i
     int winc = *wincounter;
     //if (diff == 1){winc}
     if (diff == 2){winc = winc * 5;}
-    if (diff == 3){winc = winc * 9;}
+    else if (diff == 3){winc = winc * 9;}
     add_score(winc);
     system("clear");
     printf("You've Won!!!!\nYour score: %d\n", winc);

@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     if (scanf("%dx%d", &row, &col) != 2)
     {
       printf("Input ERROR, please enter again (format: 30x30) ~> ");
-      //while (getchar() != '\n');  // очищаем буфер ввода
+      while (getchar() != '\n');  // очищаем буфер ввода
       continue;
     }
     if (row <= 0 || col <= 0)
@@ -199,7 +199,7 @@ deffolt_parametrs: diff = diff;
       if (gcf){bn = genCode(START_GAME_FIELD, diff, col, row, corx, cory); gcf =0;}
       if (START_GAME_FIELD[corx][cory] == '*')
       {
-        EndGame(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, &height, ColRed"\nGAME OVER\n" Reset);
+        EndGame(START_GAME_FIELD, WORK_FIELD, FLAG_FIELD, &y, &x, row, col, corx, cory, diff, &height, ColRed"\n@ - bomb\nGAME OVER\n" Reset);
         return 0;
       }
       disableRawMode();
@@ -222,6 +222,6 @@ deffolt_parametrs: diff = diff;
     execv(argv[0], argv); // запуск новой копии игры и завершение текущего процесса
   }
 }
-  //system("killall mpv");
+  system("killall mpv");
 }
 
