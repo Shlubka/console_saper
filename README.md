@@ -1,4 +1,4 @@
-# kursach
+# console saper
 
 Структура:
 [saper](#SAPER)
